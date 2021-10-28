@@ -1,5 +1,6 @@
 package org.recipe;
 
+import java.util.Optional;
 import java.util.function.*;
 import java.util.stream.Stream;
 
@@ -69,7 +70,7 @@ interface Generator<T> extends Supplier<T> {
     /**
      * TODO Documentation...
      */
-    default Generator<T>
+    default Generator<Optional<T>>
         filter
             (Predicate<? super T> predicate)
     {
@@ -79,10 +80,10 @@ interface Generator<T> extends Supplier<T> {
             while (tries < 100) {
                 T t = get();
                 if (predicate.test(t))
-                    return t;
+                    return Optional.ofNullable(t);
                 tries++;
             }
-            throw new AssertionError();
+            return Optional.empty();
         };
     }
 
