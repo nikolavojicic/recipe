@@ -1,3 +1,5 @@
+// Copyright (c) Nikola Vojičić
+
 package org.recipe;
 
 import java.util.Optional;
