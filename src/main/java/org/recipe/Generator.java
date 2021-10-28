@@ -102,6 +102,7 @@ interface Generator<T> extends Supplier<T> {
      * TODO Documentation...
      */
     default Generator<T> or(Generator<? extends T> gen) {
+        requireNonNull(gen);
         return () -> current().nextBoolean()
                 ? get()
                 : gen.get();
