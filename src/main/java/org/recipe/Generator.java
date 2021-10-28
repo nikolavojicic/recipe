@@ -1,6 +1,5 @@
 package org.recipe;
 
-import java.util.UUID;
 import java.util.function.*;
 import java.util.stream.Stream;
 
@@ -87,6 +86,9 @@ interface Generator<T> extends Supplier<T> {
         };
     }
 
+    /**
+     * TODO Documentation...
+     */
     default Generator<T> doto(Consumer<? super T> action) {
         requireNonNull(action);
         return () -> {
@@ -96,18 +98,34 @@ interface Generator<T> extends Supplier<T> {
         };
     }
 
-    default Generator<T> nullable() {
+    /**
+     * TODO Documentation...
+     */
+    default Generator<T> or(Generator<? extends T> gen) {
         return () -> current().nextBoolean()
-                        ? get()
-                        : null;
+                ? get()
+                : gen.get();
     }
 
+    /**
+     * TODO Documentation...
+     */
     default Stream<T> stream() {
         return Stream.generate(this);
     }
 
     // ---------------- FACTORIES ----------------
 
+    /**
+     * TODO Documentation...
+     */
+    static <T> Generator<T> of(Generator<T> gen) {
+        return requireNonNull(gen);
+    }
+
+    /**
+     * TODO Documentation...
+     */
     @SafeVarargs
     static <T> Generator<T>
         oneOf
@@ -121,23 +139,6 @@ interface Generator<T> extends Supplier<T> {
             var gen = (Generator<T>) gens[i];
             return gen.get();
         };
-    }
-
-    static <T> Generator<T> of(T val) {
-        requireNonNull(val);
-        return () -> val;
-    }
-
-    static <T> Generator<T> of(Generator<T> gen) {
-        return requireNonNull(gen);
-    }
-
-    static Generator<UUID> ofUUID() {
-        return UUID::randomUUID;
-    }
-
-    static Generator<Boolean> ofBoolean() {
-        return current()::nextBoolean;
     }
 
 }
