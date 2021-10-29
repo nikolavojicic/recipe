@@ -140,7 +140,7 @@ interface Generator<T> extends Supplier<T> {
         return () -> {
             int i = current().nextInt(0, gens.length);
             @SuppressWarnings("unchecked")
-            var gen = (Generator<T>) gens[i];
+            Generator<T> gen = (Generator<T>) gens[i];
             return gen.get();
         };
     }
