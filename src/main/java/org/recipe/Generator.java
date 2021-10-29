@@ -13,7 +13,7 @@ import static java.util.concurrent.ThreadLocalRandom.current;
  * TODO Documentation...
  */
 @FunctionalInterface
-interface Generator<T> extends Supplier<T> {
+public interface Generator<T> extends Supplier<T> {
 
     /**
      * TODO Documentation...
