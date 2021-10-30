@@ -4,7 +4,6 @@ package org.recipe;
 
 import java.util.Optional;
 import java.util.function.*;
-import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -20,8 +19,8 @@ public interface Generator<T> extends Supplier<T> {
      */
     default <R> Generator<R>
         map
-            (Function <? super   T,
-                       ? extends R> mapper)
+            (Function<? super   T,
+                      ? extends R> mapper)
     {
         requireNonNull(mapper);
         return () -> mapper.apply(get());
@@ -32,11 +31,26 @@ public interface Generator<T> extends Supplier<T> {
      */
     default <R> Generator<R>
         flatMap
-            (Function <? super   T,
-                       ? extends Generator<? extends R>> mapper)
+            (Function<? super   T,
+                      ? extends Generator<? extends R>> mapper)
     {
         requireNonNull(mapper);
         return () -> mapper.apply(get()).get();
+    }
+
+    /**
+     * TODO Documentation...
+     */
+    default Generator<T>
+        mapEffect
+            (Consumer<? super T> action)
+    {
+        requireNonNull(action);
+        return () -> {
+            T t = get();
+            action.accept(t);
+            return t;
+        };
     }
 
     /**
@@ -72,6 +86,24 @@ public interface Generator<T> extends Supplier<T> {
     /**
      * TODO Documentation...
      */
+    default <U> Generator<T>
+        bindEffect
+            (Generator <? extends U> gen,
+             BiConsumer<? super   T,
+                        ? super   U> action)
+    {
+        requireNonNull(gen);
+        requireNonNull(action);
+        return () -> {
+            T t = get();
+            action.accept(t, gen.get());
+            return t;
+        };
+    }
+
+    /**
+     * TODO Documentation...
+     */
     default Generator<Optional<T>>
         filter
             (Predicate<? super T> predicate)
@@ -92,14 +124,6 @@ public interface Generator<T> extends Supplier<T> {
     /**
      * TODO Documentation...
      */
-    default Generator<T> doto(Consumer<? super T> action) {
-        requireNonNull(action);
-        return () -> {
-            T t = get();
-            action.accept(t);
-            return t;
-        };
-    }
     default Generator<T>
         or
             (Generator<? extends T> gen)
