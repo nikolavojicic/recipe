@@ -100,11 +100,10 @@ public interface Generator<T> extends Supplier<T> {
             return t;
         };
     }
-
-    /**
-     * TODO Documentation...
-     */
-    default Generator<T> or(Generator<? extends T> gen) {
+    default Generator<T>
+        or
+            (Generator<? extends T> gen)
+    {
         requireNonNull(gen);
         return () -> current().nextBoolean()
                 ? get()
@@ -114,8 +113,13 @@ public interface Generator<T> extends Supplier<T> {
     /**
      * TODO Documentation...
      */
-    default Stream<T> stream() {
-        return Stream.generate(this);
+    default <R> Generator<R>
+        lift
+            (Function<? super   Generator<? extends T>,
+                      ? extends R>                      lifter)
+    {
+        requireNonNull(lifter);
+        return () -> lifter.apply(this);
     }
 
     // ---------------- FACTORIES ----------------
@@ -123,7 +127,10 @@ public interface Generator<T> extends Supplier<T> {
     /**
      * TODO Documentation...
      */
-    static <T> Generator<T> of(Generator<T> gen) {
+    static <T> Generator<T>
+        of
+            (Generator<T> gen)
+    {
         return requireNonNull(gen);
     }
 
