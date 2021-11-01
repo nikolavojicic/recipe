@@ -161,6 +161,16 @@ public interface Generator<T> extends Supplier<T> {
     /**
      * TODO Documentation...
      */
+    static <T> Generator<T>
+        ofValue
+            (T value)
+    {
+        return () -> value;
+    }
+
+    /**
+     * TODO Documentation...
+     */
     @SafeVarargs
     static <T> Generator<T>
         oneOf
