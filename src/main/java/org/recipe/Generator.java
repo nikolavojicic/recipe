@@ -168,6 +168,8 @@ public interface Generator<T> extends Supplier<T> {
     {
         if (gens.length == 0)
             throw new IllegalArgumentException("Empty gens");
+        for (Generator<?> gen : gens)
+            requireNonNull(gen);
         return () -> {
             int i = current().nextInt(0, gens.length);
             @SuppressWarnings("unchecked")
