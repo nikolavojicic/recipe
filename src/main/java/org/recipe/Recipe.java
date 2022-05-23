@@ -28,13 +28,13 @@ public interface Recipe<T> extends Supplier<T> {
     }
 
     /**
-     * Applies {@code mapper} that returns Recipe, to the produced values.
+     * Applies {@code mapper} that returns Supplier, to the produced values.
      * @throws NullPointerException if {@code mapper} is {@code null}
      */
     default <R> Recipe<R>
         flatMap
             (Function<? super   T,
-                      ? extends Recipe<? extends R>> mapper)
+                      ? extends Supplier<? extends R>> mapper)
     {
         requireNonNull(mapper);
         return () -> mapper.apply(get()).get();
@@ -62,7 +62,7 @@ public interface Recipe<T> extends Supplier<T> {
      */
     default <U, R> Recipe<R>
         bind
-            (Recipe    <? extends U> recipe,
+            (Supplier  <? extends U> recipe,
              BiFunction<? super   T,
                         ? super   U,
                         ? extends R> binder)
@@ -73,15 +73,15 @@ public interface Recipe<T> extends Supplier<T> {
     }
 
     /**
-     * Applies {@code binder} that returns Recipe, to the values produced by {@code this} and {@code recipe}.
+     * Applies {@code binder} that returns Supplier, to the values produced by {@code this} and {@code recipe}.
      * @throws NullPointerException if {@code recipe} or {@code binder} is {@code null}
      */
     default <U, R> Recipe<R>
         flatBind
-            (Recipe    <? extends U> recipe,
+            (Supplier  <? extends U> recipe,
              BiFunction<? super   T,
                         ? super   U,
-                        ? extends Recipe<? extends R>> binder)
+                        ? extends Supplier<? extends R>> binder)
     {
         requireNonNull(recipe);
         requireNonNull(binder);
@@ -94,7 +94,7 @@ public interface Recipe<T> extends Supplier<T> {
      */
     default <U> Recipe<T>
         bindEffect
-            (Recipe    <? extends U> recipe,
+            (Supplier  <? extends U> recipe,
              BiConsumer<? super   T,
                         ? super   U> binder)
     {
@@ -136,7 +136,7 @@ public interface Recipe<T> extends Supplier<T> {
      */
     default Recipe<T>
         or
-            (Recipe<? extends T> recipe)
+            (Supplier<? extends T> recipe)
     {
         requireNonNull(recipe);
         return () -> current().nextBoolean()
@@ -150,8 +150,8 @@ public interface Recipe<T> extends Supplier<T> {
      */
     default <R> Recipe<R>
         lift
-            (Function<? super Recipe<? extends T>,
-                      ? extends R>                 lifter)
+            (Function<? super   Recipe<? extends T>,
+                      ? extends R>                   lifter)
     {
         requireNonNull(lifter);
         return () -> lifter.apply(this);
@@ -165,9 +165,9 @@ public interface Recipe<T> extends Supplier<T> {
      */
     static <T> Recipe<T>
         of
-            (Recipe<T> recipe)
+            (Supplier<? extends T> recipe)
     {
-        return requireNonNull(recipe);
+        return recipe::get;
     }
 
     /**
@@ -188,12 +188,12 @@ public interface Recipe<T> extends Supplier<T> {
     @SafeVarargs
     static <T> Recipe<T>
         oneOf
-            (Recipe<? extends T>... recipes)
+            (Supplier<? extends T>... recipes)
     {
         if (recipes.length == 0)
             throw new IllegalArgumentException("Empty recipes");
-        List<Recipe<? extends T>> recipeList = new ArrayList<>(recipes.length);
-        for (Recipe<? extends T> recipe : recipes)
+        List<Supplier<? extends T>> recipeList = new ArrayList<>(recipes.length);
+        for (Supplier<? extends T> recipe : recipes)
             recipeList.add(requireNonNull(recipe));
         return () -> recipeList
                 .get(current().nextInt(0, recipeList.size()))
