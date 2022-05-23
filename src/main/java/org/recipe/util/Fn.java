@@ -13,7 +13,7 @@ public class Fn {
     }
 
     /**
-     * @return function that applies action to the given value and returns that value.
+     * @return function that applies action to the given value and returns that value
      * @throws NullPointerException if {@code action} is {@code null}
      */
     public static <T> UnaryOperator<T>
@@ -28,7 +28,7 @@ public class Fn {
     }
 
     /**
-     * @return function that applies action to the given values and returns the Pair of those values.
+     * @return function that applies action to the given values and returns the Pair of those values
      * @throws NullPointerException if {@code action} is {@code null}
      */
     public static <T, U> BiFunction<T, U, Pair<T, U>>
@@ -44,11 +44,23 @@ public class Fn {
     }
 
     /**
-     * @return function that returns recipe that produces the return value of the provided {@code function}.
-     * @throws NullPointerException if {@code action} is {@code null}
+     * @return function that constantly returns the given {@code recipe}
+     * @throws NullPointerException if {@code recipe} is {@code null}
      */
     public static <T, R> Function<T, Recipe<R>>
         recfn
+            (Supplier<? extends R> recipe)
+    {
+        Recipe<R> rec = Recipe.of(recipe);
+        return __ -> rec;
+    }
+
+    /**
+     * @return function that returns recipe that produces the return value of the provided {@code function}
+     * @throws NullPointerException if {@code function} is {@code null}
+     */
+    public static <T, R> Function<T, Recipe<R>>
+        fnrec
             (Function<? super   T,
                       ? extends R> function)
     {

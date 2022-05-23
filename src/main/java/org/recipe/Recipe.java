@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.ThreadLocalRandom.current;
-import static org.recipe.util.Fn.recfn;
+import static org.recipe.util.Fn.fnrec;
 
 @FunctionalInterface
 public interface Recipe<T> extends Supplier<T> {
@@ -143,7 +143,7 @@ public interface Recipe<T> extends Supplier<T> {
             recipeList.add(requireNonNull(recipe));
         return Recipe
                 .ofValue(recipeList)
-                .bind(recfn(list -> current().nextInt(0, list.size())), List::get)
+                .bind(fnrec(list -> current().nextInt(0, list.size())), List::get)
                 .map(Recipe::of)
                 .map(Recipe::get);
     }
