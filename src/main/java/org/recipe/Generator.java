@@ -4,6 +4,8 @@ package org.recipe;
 
 import org.recipe.exception.GeneratorFilterException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.*;
 
 import static java.util.Objects.requireNonNull;
@@ -191,14 +193,12 @@ public interface Generator<T> extends Supplier<T> {
     {
         if (generators.length == 0)
             throw new IllegalArgumentException("Empty generators");
-        for (Generator<?> generator : generators)
-            requireNonNull(generator);
-        return () -> {
-            int i = current().nextInt(0, generators.length);
-            @SuppressWarnings("unchecked")
-            Generator<T> generator = (Generator<T>) generators[i];
-            return generator.get();
-        };
+        List<Generator<? extends T>> generatorList = new ArrayList<>();
+        for (Generator<? extends T> generator : generators)
+            generatorList.add(requireNonNull(generator));
+        return () -> generatorList
+                .get(current().nextInt(0, generatorList.size()))
+                .get();
     }
 
 }
