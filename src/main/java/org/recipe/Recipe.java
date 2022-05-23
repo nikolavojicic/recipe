@@ -28,19 +28,6 @@ public interface Recipe<T> extends Supplier<T> {
     }
 
     /**
-     * Applies {@code mapper} that returns Supplier, to the produced values.
-     * @throws NullPointerException if {@code mapper} is {@code null}
-     */
-    default <R> Recipe<R>
-        flatMap
-            (Function<? super   T,
-                      ? extends Supplier<? extends R>> mapper)
-    {
-        requireNonNull(mapper);
-        return () -> mapper.apply(get()).get();
-    }
-
-    /**
      * Applies {@code mapper} that causes side effects, to the produced values.
      * @throws NullPointerException if {@code mapper} is {@code null}
      */
@@ -70,22 +57,6 @@ public interface Recipe<T> extends Supplier<T> {
         requireNonNull(recipe);
         requireNonNull(binder);
         return () -> binder.apply(get(), recipe.get());
-    }
-
-    /**
-     * Applies {@code binder} that returns Supplier, to the values produced by {@code this} and {@code recipe}.
-     * @throws NullPointerException if {@code recipe} or {@code binder} is {@code null}
-     */
-    default <U, R> Recipe<R>
-        flatBind
-            (Supplier  <? extends U> recipe,
-             BiFunction<? super   T,
-                        ? super   U,
-                        ? extends Supplier<? extends R>> binder)
-    {
-        requireNonNull(recipe);
-        requireNonNull(binder);
-        return () -> binder.apply(get(), recipe.get()).get();
     }
 
     /**
