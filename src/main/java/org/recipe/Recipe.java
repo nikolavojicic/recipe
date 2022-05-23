@@ -6,7 +6,10 @@ import org.recipe.exception.RecipeFilterException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -28,22 +31,6 @@ public interface Recipe<T> extends Supplier<T> {
     }
 
     /**
-     * Applies {@code mapper} that causes side effects, to the produced values.
-     * @throws NullPointerException if {@code mapper} is {@code null}
-     */
-    default Recipe<T>
-        mapEffect
-            (Consumer<? super T> mapper)
-    {
-        requireNonNull(mapper);
-        return () -> {
-            T value = get();
-            mapper.accept(value);
-            return value;
-        };
-    }
-
-    /**
      * Applies {@code binder} to the values produced by {@code this} and {@code recipe}.
      * @throws NullPointerException if {@code recipe} or {@code binder} is {@code null}
      */
@@ -57,25 +44,6 @@ public interface Recipe<T> extends Supplier<T> {
         requireNonNull(recipe);
         requireNonNull(binder);
         return () -> binder.apply(get(), recipe.get());
-    }
-
-    /**
-     * Applies {@code binder} that causes side effects, to the values produced by {@code this} and {@code recipe}.
-     * @throws NullPointerException if {@code recipe} or {@code binder} is {@code null}
-     */
-    default <U> Recipe<T>
-        bindEffect
-            (Supplier  <? extends U> recipe,
-             BiConsumer<? super   T,
-                        ? super   U> binder)
-    {
-        requireNonNull(recipe);
-        requireNonNull(binder);
-        return () -> {
-            T value = get();
-            binder.accept(value, recipe.get());
-            return value;
-        };
     }
 
     /**
