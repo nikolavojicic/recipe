@@ -18,7 +18,7 @@ import static java.util.concurrent.ThreadLocalRandom.current;
 public interface Recipe<T> extends Supplier<T> {
 
     /**
-     * Applies {@code mapper} to the produced values.
+     * @return recipe that applies {@code mapper} to the produced values
      * @throws NullPointerException if {@code mapper} is {@code null}
      */
     default <R> Recipe<R>
@@ -31,19 +31,25 @@ public interface Recipe<T> extends Supplier<T> {
     }
 
     /**
-     * Applies {@code binder} to the values produced by {@code this} and {@code recipe}.
-     * @throws NullPointerException if {@code recipe} or {@code binder} is {@code null}
+     * @return recipe that applies {@code binder} to the values:<br/>
+     *         1. produced by {@code this} recipe<br/>
+     *         2. produced by the recipe returned by {@code recipeFn}, given the value from 1.
+     * @throws NullPointerException if {@code recipeFn} or {@code binder} is {@code null}
      */
     default <U, R> Recipe<R>
         bind
-            (Supplier  <? extends U> recipe,
+            (Function  <? super   T,
+                        ? extends Supplier<? extends U>> recipeFn,
              BiFunction<? super   T,
                         ? super   U,
                         ? extends R> binder)
     {
-        requireNonNull(recipe);
+        requireNonNull(recipeFn);
         requireNonNull(binder);
-        return () -> binder.apply(get(), recipe.get());
+        return () -> {
+            T value = get();
+            return binder.apply(value, recipeFn.apply(value).get());
+        };
     }
 
     /**
@@ -134,9 +140,11 @@ public interface Recipe<T> extends Supplier<T> {
         List<Supplier<? extends T>> recipeList = new ArrayList<>(recipes.length);
         for (Supplier<? extends T> recipe : recipes)
             recipeList.add(requireNonNull(recipe));
-        return () -> recipeList
-                .get(current().nextInt(0, recipeList.size()))
-                .get();
+        return Recipe
+                .ofValue(recipeList)
+                .bind(list -> () -> current().nextInt(0, list.size()), List::get)
+                .map(Recipe::of)
+                .map(Recipe::get);
     }
 
 }

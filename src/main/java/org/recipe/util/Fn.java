@@ -1,9 +1,8 @@
 package org.recipe.util;
 
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
+import org.recipe.Recipe;
+
+import java.util.function.*;
 
 import static java.util.Objects.requireNonNull;
 
@@ -42,6 +41,19 @@ public class Fn {
             action.accept(x, y);
             return new Pair<>(x, y);
         };
+    }
+
+    /**
+     * @return function that returns recipe that produces the return value of the provided {@code function}.
+     * @throws NullPointerException if {@code action} is {@code null}
+     */
+    public static <T, R> Function<T, Recipe<R>>
+        recfn
+            (Function<? super   T,
+                      ? extends R> function)
+    {
+        requireNonNull(function);
+        return x -> Recipe.ofValue(function.apply(x));
     }
 
 }
