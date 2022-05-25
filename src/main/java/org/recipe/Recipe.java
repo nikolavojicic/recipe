@@ -4,7 +4,7 @@ package org.recipe;
 
 import org.recipe.exception.RecipeFilterException;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.ThreadLocalRandom.current;
+import static java.util.stream.Collectors.toList;
 import static org.recipe.util.Fn.fnrec;
 
 @FunctionalInterface
@@ -138,13 +139,9 @@ public interface Recipe<T> extends Supplier<T> {
     {
         if (recipes.length == 0)
             throw new IllegalArgumentException("Empty recipes");
-        List<Supplier<? extends T>> recipeList = new ArrayList<>(recipes.length);
-        for (Supplier<? extends T> recipe : recipes)
-            recipeList.add(requireNonNull(recipe));
         return Recipe
-                .ofValue(recipeList)
+                .ofValue(Arrays.stream(recipes).map(Recipe::of).collect(toList()))
                 .bind(fnrec(list -> current().nextInt(0, list.size())), List::get)
-                .map(Recipe::of)
                 .map(Recipe::get);
     }
 
