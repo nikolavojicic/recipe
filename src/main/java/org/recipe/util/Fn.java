@@ -13,7 +13,7 @@ public class Fn {
     }
 
     /**
-     * @return function that applies action to the given value and returns that value
+     * @return function that applies {@code action} to the given value and returns that value
      * @throws NullPointerException if {@code action} is {@code null}
      */
     public static <T> UnaryOperator<T>
@@ -28,7 +28,7 @@ public class Fn {
     }
 
     /**
-     * @return function that applies action to the given values and returns the Pair of those values
+     * @return function that applies {@code action} to the given values and returns the Pair of those values
      * @throws NullPointerException if {@code action} is {@code null}
      */
     public static <T, U> BiFunction<T, U, Pair<T, U>>
