@@ -16,6 +16,11 @@ import static java.util.concurrent.ThreadLocalRandom.current;
 import static java.util.stream.Collectors.toList;
 import static org.recipe.util.Fn.fnrec;
 
+/**
+ * Extends {@link Supplier} with higher-order methods that enable composition
+ * of suppliers and transformation and filtering of the results returned by
+ * the {@link Supplier#get()} functional method.
+ **/
 @FunctionalInterface
 public interface Recipe<T> extends Supplier<T> {
 
