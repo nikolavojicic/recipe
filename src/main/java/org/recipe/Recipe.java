@@ -18,7 +18,7 @@ import static org.recipe.util.Fn.fnrec;
 
 /**
  * Extends {@link Supplier} with higher-order methods that enable composition
- * of suppliers and transformation and filtering of the results returned by
+ * of suppliers and transformation and filtering of the results produced by
  * the {@link Supplier#get()} functional method.
  **/
 @FunctionalInterface
@@ -143,7 +143,7 @@ public interface Recipe<T> extends Supplier<T> {
             (Supplier<? extends T>... recipes)
     {
         if (recipes.length == 0)
-            throw new IllegalArgumentException("Empty recipes");
+            throw new IllegalArgumentException("Empty recipes.");
         return Recipe
                 .ofValue(Arrays.stream(recipes).map(Recipe::of).collect(toList()))
                 .bind(fnrec(list -> current().nextInt(0, list.size())), List::get)
