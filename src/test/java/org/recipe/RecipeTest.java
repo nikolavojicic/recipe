@@ -15,7 +15,6 @@ import static java.util.Collections.singleton;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static java.util.stream.Collectors.toSet;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.recipe.Recipe.ofValue;
 import static org.recipe.util.Fn.doto;
 
 @SuppressWarnings({
@@ -48,12 +47,12 @@ class RecipeTest {
 
     @Test
     void ofValue_null() {
-        assertNull(ofValue(null).get());
+        assertNull(Recipe.ofValue(null).get());
     }
 
     @Test
     void ofValue_random() {
-        Recipe<Integer> rec = ofValue(current().nextInt());
+        Recipe<Integer> rec = Recipe.ofValue(current().nextInt());
         assertEquals(
                 singleton(rec.get()),
                 Stream.generate(rec).limit(100).collect(toSet()));
@@ -61,7 +60,8 @@ class RecipeTest {
 
     @Test
     void ofValue_mutable() {
-        Recipe<Long> rec = ofValue(new AtomicLong())
+        Recipe<Long> rec = Recipe
+                .ofValue(new AtomicLong())
                 .map(AtomicLong::incrementAndGet);
         assertEquals(1, rec.get());
         assertEquals(2, rec.get());
@@ -82,7 +82,8 @@ class RecipeTest {
     @Test
     void oneOf_one() {
         Recipe<Long> rec = Recipe.oneOf(
-                ofValue(new AtomicLong())
+                Recipe
+                        .ofValue(new AtomicLong())
                         .map(AtomicLong::incrementAndGet));
         assertEquals(1, rec.get());
         assertEquals(2, rec.get());
@@ -102,19 +103,19 @@ class RecipeTest {
 
     @Test
     void map_null() {
-        Recipe<Integer> rec = ofValue(5);
+        Recipe<Integer> rec = Recipe.ofValue(5);
         assertThrows(NullPointerException.class, () -> rec.map(null));
     }
 
     @Test
     void map_nonNull() {
-        Recipe<Integer> rec = ofValue(5).map(x -> x + 1);
+        Recipe<Integer> rec = Recipe.ofValue(5).map(x -> x + 1);
         assertEquals(6, rec.get());
     }
 
     @Test
     void bind_null() {
-        Recipe<Integer> rec = ofValue(5);
+        Recipe<Integer> rec = Recipe.ofValue(5);
         assertThrows(NullPointerException.class, () -> rec.bind(null, null));
         assertThrows(NullPointerException.class, () -> rec.bind(null, (x, y) -> x));
         assertThrows(NullPointerException.class, () -> rec.bind(x -> () -> x, null));
