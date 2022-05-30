@@ -6,6 +6,9 @@ import java.util.function.*;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Non-instantiable class with function-related static utility methods.
+ */
 public class Fn {
 
     private Fn() {

@@ -2,6 +2,12 @@ package org.recipe.util;
 
 import java.util.Objects;
 
+/**
+ * Unmodifiable pair of two nullable values.
+ *
+ * @param <T> type of the first value
+ * @param <U> type of the second value
+ */
 public final class Pair<T, U> {
 
     private final T first;
