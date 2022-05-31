@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
 import static java.util.Collections.singleton;
@@ -38,9 +37,9 @@ class RecipeTest {
 
     @Test
     void of_mutable() {
-        Recipe<Long> rec = Recipe
-                .of(AtomicLong::new)
-                .map(AtomicLong::incrementAndGet);
+        Recipe<Integer> rec = Recipe
+                .of(AtomicInteger::new)
+                .map(AtomicInteger::incrementAndGet);
         assertEquals(1, rec.get());
         assertEquals(1, rec.get());
     }
@@ -60,9 +59,9 @@ class RecipeTest {
 
     @Test
     void ofValue_mutable() {
-        Recipe<Long> rec = Recipe
-                .ofValue(new AtomicLong())
-                .map(AtomicLong::incrementAndGet);
+        Recipe<Integer> rec = Recipe
+                .ofValue(new AtomicInteger())
+                .map(AtomicInteger::incrementAndGet);
         assertEquals(1, rec.get());
         assertEquals(2, rec.get());
     }
@@ -81,10 +80,10 @@ class RecipeTest {
 
     @Test
     void oneOf_one() {
-        Recipe<Long> rec = Recipe.oneOf(
+        Recipe<Integer> rec = Recipe.oneOf(
                 Recipe
-                        .ofValue(new AtomicLong())
-                        .map(AtomicLong::incrementAndGet));
+                        .ofValue(new AtomicInteger())
+                        .map(AtomicInteger::incrementAndGet));
         assertEquals(1, rec.get());
         assertEquals(2, rec.get());
     }
