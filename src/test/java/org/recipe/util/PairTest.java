@@ -43,10 +43,13 @@ class PairTest {
     void test_unmodifiable() {
         Pair<Integer, String> oldPair = new Pair<>(5, "five");
         Pair<Integer, String> newPair = oldPair.withFirst(6).withSecond("six");
+        Pair<Integer, Integer> mapPair = oldPair.mapFirst(x -> x + 1).mapSecond(String::length);
         assertEquals(5, oldPair.first());
         assertEquals("five", oldPair.second());
         assertEquals(6, newPair.first());
         assertEquals("six", newPair.second());
+        assertEquals(6, mapPair.first());
+        assertEquals(4, mapPair.second());
     }
 
 }

@@ -1,6 +1,7 @@
 package org.recipe.util;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * Unmodifiable pair of two nullable values.
@@ -32,6 +33,14 @@ public final class Pair<T, U> {
 
     public <X> Pair<T, X> withSecond(X second) {
         return new Pair<>(first, second);
+    }
+
+    public <X> Pair<X, U> mapFirst(Function<? super T, ? extends X> mapper) {
+        return new Pair<>(mapper.apply(first), second);
+    }
+
+    public <X> Pair<T, X> mapSecond(Function<? super U, ? extends X> mapper) {
+        return new Pair<>(first, mapper.apply(second));
     }
 
     @Override
