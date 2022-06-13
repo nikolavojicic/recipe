@@ -1,0 +1,23 @@
+#+STARTUP: hidestars
+
+** recipe
+
+   Extends [[https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html][java.util.function.Supplier]]
+   with higher-order methods that enable composition of suppliers and transformation and filtering of the results
+   produced by the ~Supplier#get~ functional method.
+
+** Installation
+
+   Requires *Java 8* or higher.
+
+   Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
+
+   #+begin_src groovy
+   dependencies {
+       implementation 'com.github.nikolavojicic:recipe:<COMMIT-HASH>'
+   }
+   #+end_src
+
+   *TODO*: Publish to the /Maven Central Repository/.
+
+** Examples
