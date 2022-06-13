@@ -1,6 +1,9 @@
 #+STARTUP: indent
 #+STARTUP: hidestars
 
+#+PROPERTY: header-args :dir target/examples
+#+PROPERTY: header-args:java :cmdline -classpath .;../classes/ :cmpflag -classpath .;../classes/
+
 ** recipe
 
 Extends [[https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html][java.util.function.Supplier]]
@@ -22,3 +25,21 @@ dependencies {
 *TODO*: Publish to the /Maven Central Repository/.
 
 ** Examples
+
+*** Preparation
+
+**** Compile project
+
+#+begin_src sh :dir . :results none
+  mvn clean compile
+#+end_src
+
+**** Verify Java version
+
+#+begin_src java :results value :exports both
+  return System.getProperty("java.version");
+#+end_src
+
+#+RESULTS:
+: 17.0.2
+
