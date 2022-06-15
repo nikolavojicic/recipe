@@ -5,7 +5,7 @@
 
 #+PROPERTY: header-args:java  :cmdline -classpath .;../classes/
 #+PROPERTY: header-args:java+ :cmpflag -classpath .;../classes/
-#+PROPERTY: header-args:java+ :imports org.recipe.Recipe java.util.function.Supplier java.util.UUID
+#+PROPERTY: header-args:java+ :imports org.recipe.Recipe java.util.function.Supplier java.util.UUID java.util.concurrent.atomic.AtomicLong
 
 ** recipe
 
@@ -145,3 +145,36 @@ as a converter to the Recipe type.
 > Results ↴
 #+RESULTS: convert
 : 36
+
+**** Constant Recipe
+
+Recipe that constantly returns the given reference can be created with the static factory method ~ofValue~.
+
+#+name: value->recipe
+#+begin_src java :results value :exports both
+  var rec = Recipe.ofValue(List.of(1, 2, 3));
+  return rec.get() == rec.get();
+#+end_src
+
+> Results ↴
+#+RESULTS: value->recipe
+: true
+
+This method is also useful for creating stateful recipes (provided argument should be thread-safe).
+
+#+name: autoincrement
+#+begin_src java :results output :exports both
+  var rec = Recipe
+      .ofValue(new AtomicLong())
+      .map(AtomicLong::incrementAndGet);
+
+  System.out.println(rec.get());
+  System.out.println(rec.get());
+  System.out.println(rec.get());
+#+end_src
+
+> Results ↴
+#+RESULTS: autoincrement
+: 1
+: 2
+: 3
