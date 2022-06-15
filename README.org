@@ -2,13 +2,16 @@
 #+STARTUP: hidestars
 
 #+PROPERTY: header-args :dir target/examples
-#+PROPERTY: header-args:java :cmdline -classpath .;../classes/ :cmpflag -classpath .;../classes/
+
+#+PROPERTY: header-args:java  :cmdline -classpath .;../classes/
+#+PROPERTY: header-args:java+ :cmpflag -classpath .;../classes/
+#+PROPERTY: header-args:java+ :imports org.recipe.Recipe java.util.function.Supplier java.util.UUID
 
 ** recipe
 
 Extends [[https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html][java.util.function.Supplier]]
 with higher-order methods that enable composition of suppliers and transformation and filtering of the results
-produced by the ~Supplier#get~ functional method.
+produced by the ~get~ functional method.
 
 ** Installation
 
@@ -28,18 +31,20 @@ dependencies {
 
 *** Preparation
 
-**** Compile project
+- Compile project
 
 #+begin_src sh :dir . :results none
   mvn clean compile
 #+end_src
 
-**** Verify Java version
+- Verify Java version
 
+#+name: verify-java-version
 #+begin_src java :results value :exports both
   return System.getProperty("java.version");
 #+end_src
 
-#+RESULTS:
+> Results ↴
+#+RESULTS: verify-java-version
 : 17.0.2
 
