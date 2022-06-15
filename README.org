@@ -79,3 +79,36 @@ dependencies {
   import static java.util.concurrent.ThreadLocalRandom.current;
 
 #+end_src
+
+*** Creating recipes
+
+[[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/org/recipe/Recipe.java][Recipe]] is a functional interface that extends the [[https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html][Supplier]] interface.
+Both of them represent functions that accept nothing and return some value.
+These functions are executed by calling the ~get~ functional method.
+
+- Lambda expression
+
+#+name: lambda-expression
+#+begin_src java :results value :exports both
+  Supplier<String> sup = () -> "foo";
+  Recipe  <String> rec = () -> "foo";
+  return sup.get().equals(rec.get());
+#+end_src
+
+> Results ↴
+#+RESULTS: lambda-expression
+: true
+
+- Method reference
+
+#+name: method-reference
+#+begin_src java :results output :exports both
+  Recipe<UUID> rec = UUID::randomUUID;
+  System.out.println(rec.get());
+  System.out.println(rec.get());
+#+end_src
+
+> Results ↴
+#+RESULTS: method-reference
+: 73299a1e-61b2-499d-8b12-72f4faac97cf
+: b45f37d7-f174-4d06-ada3-99a867183548
