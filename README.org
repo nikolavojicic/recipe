@@ -112,3 +112,37 @@ These functions are executed by calling the ~get~ functional method.
 #+RESULTS: method-reference
 : 73299a1e-61b2-499d-8b12-72f4faac97cf
 : b45f37d7-f174-4d06-ada3-99a867183548
+
+- Function -> Recipe
+
+Recipe extends Supplier by providing default methods that enable composition of suppliers
+/ recipes and transformation and filtering of the results produced by the ~get~ method.
+
+There is no way to chain those default method calls directly on the lambda expression
+/ method reference so that the whole definition of a Recipe is written as a single
+expression. One way to achieve this is to use ~of~ static factory method as a wrapper.
+
+#+begin_src java :noweb-ref Util :results none
+  public static final Recipe<String>
+      REC_UUID_STR = Recipe
+          .of(UUID::randomUUID)
+          .map(UUID::toString);
+#+end_src
+
+All Recipe methods that accept other recipes as arguments accept any extension of the
+Supplier instead of the concrete Recipe type. That's why ~of~ method can also be used as
+a converter to the Recipe type.
+
+#+name: convert
+#+begin_src java :results value :exports both
+  Supplier<UUID> sup = UUID::randomUUID;
+  return Recipe
+      .of(sup)
+      .map(UUID::toString)
+      .map(String::length)
+      .get();
+#+end_src
+
+> Results ↴
+#+RESULTS: convert
+: 36
