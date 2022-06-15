@@ -9,9 +9,8 @@
 
 ** recipe
 
-Extends [[https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html][java.util.function.Supplier]]
-with higher-order methods that enable composition of suppliers and transformation and filtering of the results
-produced by the ~get~ functional method.
+Extends [[https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html][java.util.function.Supplier]] with higher-order methods that enable composition of
+suppliers and transformation and filtering of the results produced by the functional method ~get~.
 
 ** Installation
 
@@ -84,7 +83,7 @@ dependencies {
 
 [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/org/recipe/Recipe.java][Recipe]] is a functional interface that extends the [[https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html][Supplier]] interface.
 Both of them represent functions that accept nothing and return some value.
-These functions are executed by calling the ~get~ functional method.
+These functions are executed by calling the functional method ~get~.
 
 **** Lambda expression
 
@@ -116,11 +115,11 @@ These functions are executed by calling the ~get~ functional method.
 **** Function -> Recipe
 
 Recipe extends Supplier by providing default methods that enable composition of suppliers
-/ recipes and transformation and filtering of the results produced by the ~get~ method.
+/ recipes and transformation and filtering of the results produced by the method ~get~.
 
 There is no way to chain those default method calls directly on the lambda expression
 / method reference so that the whole definition of a Recipe is written as a single
-expression. One way to achieve this is to use ~of~ static factory method as a wrapper.
+expression. One way to achieve this is to use the static factory method ~of~ as a wrapper.
 
 #+begin_src java :noweb-ref Util :results none
   public static final Recipe<String>
@@ -130,8 +129,8 @@ expression. One way to achieve this is to use ~of~ static factory method as a wr
 #+end_src
 
 All Recipe methods that accept other recipes as arguments accept any extension of the
-Supplier instead of the concrete Recipe type. That's why ~of~ method can also be used as
-a converter to the Recipe type.
+Supplier instead of the concrete Recipe type. That's why the method ~of~ can also be used
+as a converter to the Recipe type.
 
 #+name: convert
 #+begin_src java :results value :exports both
