@@ -48,3 +48,15 @@ dependencies {
 #+RESULTS: verify-java-version
 : 17.0.2
 
+#+begin_src java :noweb yes :tangle target/examples/Util.java :classname Util :exports none :results none
+  <<UtilImports>>
+
+  public class Util {
+
+      // dummy main to avoid auto-generated
+      public static void main(String[] args) {}
+
+      <<Util>>
+
+  }
+#+end_src
