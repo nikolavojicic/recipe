@@ -31,13 +31,13 @@ dependencies {
 
 *** Preparation
 
-- Compile project
+**** Compile project
 
 #+begin_src sh :dir . :results none
   mvn clean compile
 #+end_src
 
-- Verify Java version
+**** Verify Java version
 
 #+name: verify-java-version
 #+begin_src java :results value :exports both
@@ -61,7 +61,7 @@ dependencies {
   }
 #+end_src
 
-- Add imports needed for examples
+**** Add imports needed for examples
 
 #+begin_src java :noweb-ref UtilImports :results none
   import org.recipe.Recipe;
@@ -86,7 +86,7 @@ dependencies {
 Both of them represent functions that accept nothing and return some value.
 These functions are executed by calling the ~get~ functional method.
 
-- Lambda expression
+**** Lambda expression
 
 #+name: lambda-expression
 #+begin_src java :results value :exports both
@@ -99,7 +99,7 @@ These functions are executed by calling the ~get~ functional method.
 #+RESULTS: lambda-expression
 : true
 
-- Method reference
+**** Method reference
 
 #+name: method-reference
 #+begin_src java :results output :exports both
@@ -113,7 +113,7 @@ These functions are executed by calling the ~get~ functional method.
 : 73299a1e-61b2-499d-8b12-72f4faac97cf
 : b45f37d7-f174-4d06-ada3-99a867183548
 
-- Function -> Recipe
+**** Function -> Recipe
 
 Recipe extends Supplier by providing default methods that enable composition of suppliers
 / recipes and transformation and filtering of the results produced by the ~get~ method.
