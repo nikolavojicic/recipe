@@ -128,7 +128,7 @@ expression. One way to achieve this is to use the static factory method ~of~ as 
           .map(UUID::toString);
 #+end_src
 
-All Recipe methods that accept other recipes as arguments accept any extension of the
+All Recipe methods that accept other recipes as arguments, accept any extension of the
 Supplier instead of the concrete Recipe type. That's why the method ~of~ can also be used
 as a converter to the Recipe type.
 
@@ -152,7 +152,7 @@ Recipe that constantly returns the given reference can be created with the stati
 
 #+name: value->recipe
 #+begin_src java :results value :exports both
-  var rec = Recipe.ofValue(List.of(1, 2, 3));
+  Recipe<List> rec = Recipe.ofValue(Arrays.asList(1, 2, 3));
   return rec.get() == rec.get();
 #+end_src
 
@@ -164,7 +164,7 @@ This method is also useful for creating stateful recipes (provided argument shou
 
 #+name: autoincrement
 #+begin_src java :results output :exports both
-  var rec = Recipe
+  Recipe<Long> rec = Recipe
       .ofValue(new AtomicLong())
       .map(AtomicLong::incrementAndGet);
 
