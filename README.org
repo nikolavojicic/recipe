@@ -18,10 +18,10 @@ Requires *Java 8* or higher.
 
 Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
 
-#+begin_src groovy
-dependencies {
-    implementation 'com.github.nikolavojicic:recipe:<COMMIT-HASH>'
-}
+#+begin_src
+  dependencies {
+      implementation 'com.github.nikolavojicic:recipe:<COMMIT-HASH>'
+  }
 #+end_src
 
 *TODO*: Publish to the /Maven Central Repository/.
