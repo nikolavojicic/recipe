@@ -47,6 +47,8 @@ Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
 #+RESULTS: verify-java-version
 : 17.0.2
 
+**** Add imports needed for examples
+
 #+begin_src java :noweb yes :tangle target/examples/Util.java :classname Util :exports none :results none
   <<UtilImports>>
 
@@ -59,8 +61,6 @@ Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
 
   }
 #+end_src
-
-**** Add imports needed for examples
 
 #+begin_src java :noweb-ref UtilImports :results none
   import org.recipe.Recipe;
