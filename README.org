@@ -110,7 +110,9 @@ These functions are executed by calling the functional method ~get~.
   Supplier<String> sup = () -> "foo";
   Recipe  <String> rec = () -> "foo";
 
-  System.out.println(sup.get().equals(rec.get()));
+  System.out.println(
+      sup.get().equals(rec.get())
+  );
 #+end_src
 
 #+name: EXE_EXAMPLE_1
@@ -188,7 +190,9 @@ Recipe that constantly returns the given reference can be created with the stati
   Recipe<List> rec = Recipe
       .ofValue(Arrays.asList(1, 2, 3));
 
-  System.out.println(rec.get() == rec.get());
+  System.out.println(
+      rec.get() == rec.get()
+  );
 #+end_src
 
 #+name: EXE_EXAMPLE_4
