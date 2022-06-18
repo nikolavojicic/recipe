@@ -37,26 +37,46 @@ Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
 
 **** Verify Java version
 
-#+name: verify-java-version
+#+name: VERIFY_JAVA_VERSION
 #+begin_src java :results value :exports both
   return System.getProperty("java.version");
 #+end_src
 
 > Results ↴
-#+RESULTS: verify-java-version
+#+RESULTS: VERIFY_JAVA_VERSION
 : 17.0.2
 
 **** Add imports needed for examples
 
-#+begin_src java :noweb yes :tangle target/examples/Util.java :classname Util :exports none :results none
+#+begin_src java :noweb yes :tangle target/examples/Examples.java :classname Examples :results none :exports none
   <<IMPORT>>
 
-  public class Util {
+  public class Examples {
 
       // dummy main to avoid auto-generated one
       public static void main(String[] args) {}
 
       <<STATIC>>
+
+      public static void example1() {
+          <<EXAMPLE_1>>
+      }
+
+      public static void example2() {
+          <<EXAMPLE_2>>
+      }
+
+      public static void example3() {
+          <<EXAMPLE_3>>
+      }
+
+      public static void example4() {
+          <<EXAMPLE_4>>
+      }
+
+      public static void example5() {
+          <<EXAMPLE_5>>
+      }
 
   }
 #+end_src
@@ -86,36 +106,40 @@ These functions are executed by calling the functional method ~get~.
 
 **** Lambda expression
 
-#+name: lambda-expression
-#+begin_src java :noweb yes :results value :exports both
-  <<IMPORT>>
-
+#+begin_src java :noweb-ref EXAMPLE_1 :eval never
   Supplier<String> sup = () -> "foo";
   Recipe  <String> rec = () -> "foo";
 
-  return sup.get().equals(rec.get());
+  System.out.println(sup.get().equals(rec.get()));
+#+end_src
+
+#+name: EXE_EXAMPLE_1
+#+begin_src java :results output :exports results
+  Examples.example1();
 #+end_src
 
 > Results ↴
-#+RESULTS: lambda-expression
+#+RESULTS: EXE_EXAMPLE_1
 : true
 
 **** Method reference
 
-#+name: method-reference
-#+begin_src java :noweb yes :results output :exports both
-  <<IMPORT>>
-
+#+begin_src java :noweb-ref EXAMPLE_2 :eval never
   Recipe<UUID> rec = UUID::randomUUID;
 
   System.out.println(rec.get());
   System.out.println(rec.get());
 #+end_src
 
+#+name: EXE_EXAMPLE_2
+#+begin_src java :results output :exports results
+  Examples.example2();
+#+end_src
+
 > Results ↴
-#+RESULTS: method-reference
-: 73299a1e-61b2-499d-8b12-72f4faac97cf
-: b45f37d7-f174-4d06-ada3-99a867183548
+#+RESULTS: EXE_EXAMPLE_2
+: 96a3732a-70ae-4d4a-9944-4bd39daf0af4
+: 5d858623-8653-4c8a-90a9-b7cfdae043a5
 
 **** Function -> Recipe
 
@@ -137,47 +161,48 @@ All Recipe methods that accept other recipes as arguments, accept any extension 
 Supplier instead of the concrete Recipe type. That's why the method ~of~ can also be used
 as a converter to the Recipe type.
 
-#+name: convert
-#+begin_src java :noweb yes :results value :exports both
-  <<IMPORT>>
+#+begin_src java :noweb-ref EXAMPLE_3 :eval never
+  Supplier<UUID>    sup = UUID::randomUUID;
+  Recipe  <Integer> rec = Recipe
+                            .of(sup)
+                            .map(UUID::toString)
+                            .map(String::length);
 
-  Supplier<UUID> sup = UUID::randomUUID;
+  System.out.println(rec.get());
+#+end_src
 
-  return Recipe
-      .of(sup)
-      .map(UUID::toString)
-      .map(String::length)
-      .get();
+#+name: EXE_EXAMPLE_3
+#+begin_src java :results output :exports results
+  Examples.example3();
 #+end_src
 
 > Results ↴
-#+RESULTS: convert
+#+RESULTS: EXE_EXAMPLE_3
 : 36
 
 **** Constant Recipe
 
 Recipe that constantly returns the given reference can be created with the static factory method ~ofValue~.
 
-#+name: value->recipe
-#+begin_src java :noweb yes :results value :exports both
-  <<IMPORT>>
-
+#+begin_src java :noweb-ref EXAMPLE_4 :eval never
   Recipe<List> rec = Recipe
       .ofValue(Arrays.asList(1, 2, 3));
 
-  return rec.get() == rec.get();
+  System.out.println(rec.get() == rec.get());
+#+end_src
+
+#+name: EXE_EXAMPLE_4
+#+begin_src java :results output :exports results
+  Examples.example4();
 #+end_src
 
 > Results ↴
-#+RESULTS: value->recipe
+#+RESULTS: EXE_EXAMPLE_4
 : true
 
 This method is also useful for creating stateful recipes (provided argument should be thread-safe).
 
-#+name: autoincrement
-#+begin_src java :noweb yes :results output :exports both
-  <<IMPORT>>
-
+#+begin_src java :noweb-ref EXAMPLE_5 :eval never
   Recipe<Long> rec = Recipe
       .ofValue(new AtomicLong())
       .map(AtomicLong::incrementAndGet);
@@ -187,8 +212,13 @@ This method is also useful for creating stateful recipes (provided argument shou
   System.out.println(rec.get());
 #+end_src
 
+#+name: EXE_EXAMPLE_5
+#+begin_src java :results output :exports results
+  Examples.example5();
+#+end_src
+
 > Results ↴
-#+RESULTS: autoincrement
+#+RESULTS: EXE_EXAMPLE_5
 : 1
 : 2
 : 3
