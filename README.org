@@ -56,7 +56,11 @@ Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
       // dummy main to avoid auto-generated one
       public static void main(String[] args) {}
 
+      // --------------------------------------
+
       <<STATIC>>
+
+      // --------------------------------------
 
       public static void example1() {
           <<EXAMPLE_1>>
