@@ -62,7 +62,7 @@ Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
   }
 #+end_src
 
-#+begin_src java :noweb-ref UtilImports :results none
+#+begin_src java :noweb-ref UtilImports :eval never
   import org.recipe.Recipe;
 
   import static org.recipe.util.Fn.*;
@@ -124,7 +124,7 @@ There is no way to chain those default method calls directly on the lambda expre
 / method reference so that the whole definition of a Recipe is written as a single
 expression. One way to achieve this is to use the static factory method ~of~ as a wrapper.
 
-#+begin_src java :noweb-ref Util :results none
+#+begin_src java :noweb-ref Util :eval never
   public static final Recipe<String>
       REC_UUID_STR = Recipe
           .of(UUID::randomUUID)
