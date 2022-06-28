@@ -6,7 +6,7 @@
 #+PROPERTY: header-args:java  :cmdline -classpath .;../classes/
 #+PROPERTY: header-args:java+ :cmpflag -classpath .;../classes/
 
-** recipe
+** Introduction
 
 Extends [[https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html][java.util.function.Supplier]] with higher-order methods that enable composition of
 suppliers and transformation and filtering of the results produced by the functional method ~get~.
@@ -42,7 +42,7 @@ Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
   return System.getProperty("java.version");
 #+end_src
 
-> Results ↴
+Results:
 #+RESULTS: VERIFY_JAVA_VERSION
 : 17.0.2
 
@@ -124,7 +124,7 @@ These functions are executed by calling the functional method ~get~.
   Examples.example1();
 #+end_src
 
-> Results ↴
+Results:
 #+RESULTS: EXE_EXAMPLE_1
 : true
 
@@ -142,12 +142,12 @@ These functions are executed by calling the functional method ~get~.
   Examples.example2();
 #+end_src
 
-> Results ↴
+Results:
 #+RESULTS: EXE_EXAMPLE_2
 : 96a3732a-70ae-4d4a-9944-4bd39daf0af4
 : 5d858623-8653-4c8a-90a9-b7cfdae043a5
 
-**** Function -> Recipe
+**** Function to Recipe
 
 Recipe extends Supplier by providing default methods that enable composition of suppliers
 / recipes and transformation and filtering of the results produced by the method ~get~.
@@ -182,7 +182,7 @@ as a converter to the Recipe type.
   Examples.example3();
 #+end_src
 
-> Results ↴
+Results:
 #+RESULTS: EXE_EXAMPLE_3
 : 36
 
@@ -204,7 +204,7 @@ Recipe that constantly returns the given reference can be created with the stati
   Examples.example4();
 #+end_src
 
-> Results ↴
+Results:
 #+RESULTS: EXE_EXAMPLE_4
 : true
 
@@ -225,7 +225,7 @@ This method is also useful for creating stateful recipes (provided argument shou
   Examples.example5();
 #+end_src
 
-> Results ↴
+Results:
 #+RESULTS: EXE_EXAMPLE_5
 : 1
 : 2
