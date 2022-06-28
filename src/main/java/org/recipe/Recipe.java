@@ -1,4 +1,5 @@
-// Copyright (c) Nikola Vojičić
+// SPDX-FileCopyrightText: © 2022 Nikola Vojičić <nikolavojicic@outlook.com>
+// SPDX-License-Identifier: MIT
 
 package org.recipe;
 
