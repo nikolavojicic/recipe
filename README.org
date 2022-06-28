@@ -230,3 +230,41 @@ Results:
 : 1
 : 2
 : 3
+
+*** Composing recipes
+
+**** Union
+
+**** Transformation
+
+**** Filtering
+
+**** Binding
+
+**** Lifting
+
+**** Flattening
+
+**** Side effects
+
+*** Generating POJOs or Records
+
+**** Setters
+
+**** Builders
+
+**** Constructors
+
+*** More examples
+
+**** Numbers
+
+**** Text
+
+**** Unique
+
+**** Shuffle
+
+**** Frequencies
+
+**** Dependency injection
