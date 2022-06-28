@@ -19,13 +19,15 @@ import static org.recipe.util.Fn.fnrec;
 /**
  * Extends {@link Supplier} with higher-order methods that enable composition
  * of suppliers and transformation and filtering of the results produced by
- * the {@link Supplier#get()} functional method.
+ * the functional method {@link Supplier#get()}.
+ *
+ * @see <a href="https://github.com/nikolavojicic/recipe"/>https://github.com/nikolavojicic/recipe</a>
  */
 @FunctionalInterface
 public interface Recipe<T> extends Supplier<T> {
 
     /**
-     * @return recipe that applies {@code mapper} to the produced values
+     * @return recipe that applies {@code mapper} to the values produced by {@code this} recipe
      * @throws NullPointerException if {@code mapper} is {@code null}
      */
     default <R> Recipe<R>
@@ -60,7 +62,7 @@ public interface Recipe<T> extends Supplier<T> {
     }
 
     /**
-     * @return recipe for values that match the {@code predicate}
+     * @return recipe for values produced by {@code this} recipe that match the {@code predicate}
      * @throws NullPointerException if {@code predicate} is {@code null}
      * @throws RecipeFilterException if {@code predicate} returns {@code false} for 100 values in a row
      */
