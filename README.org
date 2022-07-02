@@ -82,6 +82,14 @@ Results:
           <<EXAMPLE_5>>
       }
 
+      public static void example6() {
+          <<EXAMPLE_6>>
+      }
+
+      public static void example7() {
+          <<EXAMPLE_7>>
+      }
+
   }
 #+end_src
 
@@ -234,6 +242,53 @@ Results:
 *** Composing recipes
 
 **** Union
+
+Recipe that randomly chooses a value from two recipes can be crated by the method ~or~.
+
+#+begin_src java :noweb-ref EXAMPLE_6 :eval never
+  Recipe<Integer> rec = Recipe
+      .of(() -> current().nextInt())
+      .or(() -> null);
+
+  System.out.println(rec.get());
+  System.out.println(rec.get());
+  System.out.println(rec.get());
+#+end_src
+
+#+name: EXE_EXAMPLE_6
+#+begin_src java :results output :exports results
+  Examples.example6();
+#+end_src
+
+#+RESULTS: EXE_EXAMPLE_6
+: -1658766505
+: 614352061
+: null
+
+For a union of variable number of recipes, use the static factory method ~oneOf~.
+
+#+begin_src java :noweb-ref EXAMPLE_7 :eval never
+  Recipe<String> rec = Recipe
+      .oneOf(() -> "foo",
+             REC_UUID_STR,
+             Recipe.ofValue("bar"));
+
+  System.out.println(rec.get());
+  System.out.println(rec.get());
+  System.out.println(rec.get());
+  System.out.println(rec.get());
+#+end_src
+
+#+name: EXE_EXAMPLE_7
+#+begin_src java :results output :exports results
+  Examples.example7();
+#+end_src
+
+#+RESULTS: EXE_EXAMPLE_7
+: fa4dab90-3da6-4008-82f2-d84151a75f3b
+: foo
+: 596afd9a-5117-49b5-b2cf-d78f0036b04f
+: bar
 
 **** Transformation
 
