@@ -260,6 +260,7 @@ Recipe that randomly chooses a value from two recipes can be crated by the metho
   Examples.example6();
 #+end_src
 
+Results:
 #+RESULTS: EXE_EXAMPLE_6
 : -1658766505
 : 614352061
@@ -284,6 +285,7 @@ For a union of variable number of recipes, use the static factory method ~oneOf~
   Examples.example7();
 #+end_src
 
+Results:
 #+RESULTS: EXE_EXAMPLE_7
 : fa4dab90-3da6-4008-82f2-d84151a75f3b
 : foo
