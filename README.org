@@ -354,7 +354,7 @@ Results:
 #+RESULTS: EXE_EXAMPLE_9
 : Couldn't satisfy predicate after 100 tries.
 
-These problems can be fixed either by improving the underlying recipe or by relaxing the predicate (e.g., use ~nextInt(1, 6)~ instead of unbounded ~nextInt()~).
+These problems can be fixed either by improving the underlying recipe (e.g., use ~nextInt(1, 6)~ instead of unbounded ~nextInt()~) or by relaxing the predicate.
 
 **** Transformation
 
