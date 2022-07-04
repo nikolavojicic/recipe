@@ -58,6 +58,10 @@ Results:
 
       // --------------------------------------
 
+      public static <T> Predicate<T> not(Predicate<T> predicate) {
+          return predicate.negate();
+      }
+
       <<STATIC>>
 
       // --------------------------------------
@@ -90,11 +94,20 @@ Results:
           <<EXAMPLE_7>>
       }
 
+      public static void example8() {
+          <<EXAMPLE_8>>
+      }
+
+      public static void example9() {
+          <<EXAMPLE_9>>
+      }
+
   }
 #+end_src
 
 #+begin_src java :noweb-ref IMPORT :eval never
   import org.recipe.Recipe;
+  import org.recipe.exception.RecipeFilterException;
 
   import static org.recipe.util.Fn.*;
 
@@ -104,6 +117,7 @@ Results:
   import java.util.Objects;
   import java.util.UUID;
   import java.util.concurrent.atomic.AtomicLong;
+  import java.util.function.Predicate;
   import java.util.function.Supplier;
   import java.util.stream.Stream;
 
@@ -161,7 +175,7 @@ Recipe extends Supplier by providing default methods that enable composition of 
 / recipes and transformation and filtering of the results produced by the method ~get~.
 
 There is no way to chain those default method calls directly on the lambda expression
-/ method reference so that the whole definition of a Recipe is written as a single
+/ method reference so that the whole definition of a recipe is written as a single
 expression. One way to achieve this is to use the static factory method ~of~ as a wrapper.
 
 #+begin_src java :noweb-ref STATIC :eval never
@@ -171,7 +185,7 @@ expression. One way to achieve this is to use the static factory method ~of~ as 
           .map(UUID::toString);
 #+end_src
 
-All Recipe methods that accept other recipes as arguments, accept any extension of the
+All Recipe's methods that accept other recipes as arguments, accept any extension of the
 Supplier instead of the concrete Recipe type. That's why the method ~of~ can also be used
 as a converter to the Recipe type.
 
@@ -243,7 +257,7 @@ Results:
 
 **** Union
 
-Recipe that randomly chooses a value from two recipes can be crated by the method ~or~.
+Recipe that randomly chooses a value from two recipes can be created by the method ~or~.
 
 #+begin_src java :noweb-ref EXAMPLE_6 :eval never
   Recipe<Integer> rec = Recipe
@@ -292,17 +306,63 @@ Results:
 : 596afd9a-5117-49b5-b2cf-d78f0036b04f
 : bar
 
+**** Filtering
+
+Use the method ~filter~ to create a new recipe that returns only those values, produced by another recipe, that match the given predicate.
+Predicates can be negated by the [[https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Predicate.html#not(java.util.function.Predicate)][Predicate#not]] operator.
+
+#+begin_src  java :noweb-ref EXAMPLE_8 :eval never
+  Recipe<Double> rec = Recipe
+      .of(() -> current().nextDouble())
+      .filter(x -> x > 0)
+      .filter(not(x -> x.isInfinite()));
+
+  System.out.println(rec.get());
+  System.out.println(rec.get());
+#+end_src
+
+#+name: EXE_EXAMPLE_8
+#+begin_src java :results output :exports results
+  Examples.example8();
+#+end_src
+
+#+RESULTS: EXE_EXAMPLE_8
+: 0.12826014636372696
+: 0.3920702845614149
+
+If the given predicate cannot be satisfied after 100 tries, runtime exception ~RecipeFilterException~ is thrown.
+
+#+begin_src  java :noweb-ref EXAMPLE_9 :eval never
+  Recipe<Integer> rec = Recipe
+      .of(() -> current().nextInt())
+      .filter(x -> x > 0 && x < 6);
+
+  try {
+      rec.get();
+  } catch (RecipeFilterException ex) {
+      System.out.println(ex.getMessage());
+  }
+#+end_src
+
+#+name: EXE_EXAMPLE_9
+#+begin_src java :results output :exports results
+  Examples.example9();
+#+end_src
+
+#+RESULTS: EXE_EXAMPLE_9
+: Couldn't satisfy predicate after 100 tries.
+
+These problems can be fixed either by improving the underlying recipe or by relaxing the predicate (e.g. use ~current().nextInt(1, 6)~ instead of unbounded ~nextInt()~.
+
 **** Transformation
 
-**** Filtering
 
 **** Binding
 
-**** Lifting
 
 **** Flattening
 
-**** Side effects
+**** Lifting
 
 *** Generating POJOs or Records
 
