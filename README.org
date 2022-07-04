@@ -326,6 +326,7 @@ Predicates can be negated by the [[https://docs.oracle.com/en/java/javase/11/doc
   Examples.example8();
 #+end_src
 
+Results:
 #+RESULTS: EXE_EXAMPLE_8
 : 0.12826014636372696
 : 0.3920702845614149
@@ -349,10 +350,11 @@ If the given predicate cannot be satisfied after 100 tries, runtime exception ~R
   Examples.example9();
 #+end_src
 
+Results:
 #+RESULTS: EXE_EXAMPLE_9
 : Couldn't satisfy predicate after 100 tries.
 
-These problems can be fixed either by improving the underlying recipe or by relaxing the predicate (e.g. use ~current().nextInt(1, 6)~ instead of unbounded ~nextInt()~.
+These problems can be fixed either by improving the underlying recipe or by relaxing the predicate (e.g., use ~nextInt(1, 6)~ instead of unbounded ~nextInt()~).
 
 **** Transformation
 
