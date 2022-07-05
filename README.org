@@ -102,6 +102,10 @@ Results:
           <<EXAMPLE_9>>
       }
 
+      public static void example10() {
+          <<EXAMPLE_10>>
+      }
+
   }
 #+end_src
 
@@ -111,7 +115,9 @@ Results:
 
   import static org.recipe.util.Fn.*;
 
+  import java.util.ArrayList;
   import java.util.Arrays;
+  import java.util.Collections;
   import java.util.List;
   import java.util.Map;
   import java.util.Objects;
@@ -128,7 +134,7 @@ Results:
 
 [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/org/recipe/Recipe.java][Recipe]] is a functional interface that extends the [[https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html][Supplier]] interface.
 Both of them represent functions that accept nothing and return some value.
-These functions are executed by calling the functional method ~get~.
+These functions are executed by calling their functional method ~get~.
 
 **** Lambda expression
 
@@ -309,7 +315,7 @@ Results:
 **** Filtering
 
 Use the method ~filter~ to create a new recipe that returns only those values, produced by another recipe, that match the given predicate.
-Predicates can be negated by the [[https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Predicate.html#not(java.util.function.Predicate)][Predicate#not]] operator.
+Predicates can be negated by the operator [[https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Predicate.html#not(java.util.function.Predicate)][Predicate#not]].
 
 #+begin_src java :noweb-ref EXAMPLE_8 :eval never
   Recipe<Double> rec = Recipe
@@ -358,6 +364,32 @@ This can be fixed either by improving the underlying recipe (e.g., use ~nextInt(
 
 **** Transformation
 
+Use the method ~map~ to create a new recipe that applies a function to the values produced by another recipe.
+If the given function has side effects, it is often ~void~ or returns some other type that you might want to ignore.
+Use the operator [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/org/recipe/util/Fn.java#L21][Fn#doto]] to apply the function to the object and return that same object.
+
+#+begin_src java :noweb-ref EXAMPLE_10 :eval never
+  Recipe<List<Integer>> rec = Recipe
+      .ofValue(Arrays.asList(1, 2, 3, 4, 5)) // unmodifiable list
+      .map(ArrayList::new)                   // make modifiable copy
+      .map(doto(list -> list.add(42)))       // add method returns boolean
+      .map(doto(Collections::shuffle))       // shuffle method is void
+      .map(Collections::unmodifiableList)    // make unmodifiable list
+      .map(doto(System.out::println));       // println method is void
+
+  rec.get();
+  rec.get();
+#+end_src
+
+#+name: EXE_EXAMPLE_10
+#+begin_src java :results output :exports results
+  Examples.example10();
+#+end_src
+
+Results:
+#+RESULTS: EXE_EXAMPLE_10
+: [3, 42, 5, 2, 1, 4]
+: [2, 5, 3, 1, 4, 42]
 
 **** Binding
 
