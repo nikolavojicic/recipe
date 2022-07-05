@@ -311,7 +311,7 @@ Results:
 Use the method ~filter~ to create a new recipe that returns only those values, produced by another recipe, that match the given predicate.
 Predicates can be negated by the [[https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Predicate.html#not(java.util.function.Predicate)][Predicate#not]] operator.
 
-#+begin_src  java :noweb-ref EXAMPLE_8 :eval never
+#+begin_src java :noweb-ref EXAMPLE_8 :eval never
   Recipe<Double> rec = Recipe
       .of(() -> current().nextDouble())
       .filter(x -> x > 0)
@@ -331,9 +331,9 @@ Results:
 : 0.12826014636372696
 : 0.3920702845614149
 
-If the given predicate cannot be satisfied after 100 tries, runtime exception ~RecipeFilterException~ is thrown.
+When the given predicate cannot be satisfied after 100 tries, runtime exception ~RecipeFilterException~ is thrown.
 
-#+begin_src  java :noweb-ref EXAMPLE_9 :eval never
+#+begin_src java :noweb-ref EXAMPLE_9 :eval never
   Recipe<Integer> rec = Recipe
       .of(() -> current().nextInt())
       .filter(x -> x > 0 && x < 6);
@@ -354,7 +354,7 @@ Results:
 #+RESULTS: EXE_EXAMPLE_9
 : Couldn't satisfy predicate after 100 tries.
 
-These problems can be fixed either by improving the underlying recipe (e.g., use ~nextInt(1, 6)~ instead of unbounded ~nextInt()~) or by relaxing the predicate.
+This can be fixed either by improving the underlying recipe (e.g., use ~nextInt(1, 6)~ instead of unbounded ~nextInt()~) or by relaxing the predicate.
 
 **** Transformation
 
