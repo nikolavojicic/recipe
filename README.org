@@ -394,7 +394,6 @@ Results:
 
 **** Binding
 
-
 **** Flattening
 
 **** Lifting
@@ -409,16 +408,8 @@ Results:
 
 **** Constructors
 
-*** More examples
+*** Generating numbers
 
-**** Numbers
+*** Generating text
 
-**** Text
-
-**** Unique
-
-**** Shuffle
-
-**** Frequencies
-
-**** Dependency injection
+*** Dependency injection
