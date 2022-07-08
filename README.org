@@ -116,7 +116,6 @@ Results:
   import static org.recipe.util.Fn.*;
 
   import java.util.ArrayList;
-  import java.util.Arrays;
   import java.util.Collections;
   import java.util.List;
   import java.util.Map;
@@ -127,6 +126,7 @@ Results:
   import java.util.function.Supplier;
   import java.util.stream.Stream;
 
+  import static java.util.Arrays.asList;
   import static java.util.concurrent.ThreadLocalRandom.current;
 #+end_src
 
@@ -220,7 +220,7 @@ Recipe that constantly returns the given reference can be created with the stati
 
 #+begin_src java :noweb-ref EXAMPLE_4 :eval never
   Recipe<List> rec = Recipe
-      .ofValue(Arrays.asList(1, 2, 3));
+      .ofValue(asList(1, 2, 3));
 
   System.out.println(
       rec.get() == rec.get()
@@ -371,12 +371,12 @@ Use the operator [[https://github.com/nikolavojicic/recipe/blob/master/src/main/
 
 #+begin_src java :noweb-ref EXAMPLE_10 :eval never
   Recipe<List<Integer>> rec = Recipe
-      .ofValue(Arrays.asList(1, 2, 3, 4, 5)) // unmodifiable list
-      .map(ArrayList::new)                   // make modifiable copy
-      .map(doto(list -> list.add(42)))       // add method returns boolean
-      .map(doto(Collections::shuffle))       // shuffle method is void
-      .map(Collections::unmodifiableList)    // make unmodifiable list
-      .map(doto(System.out::println));       // println method is void
+      .ofValue(asList(1, 2, 3, 4, 5))     // unmodifiable list
+      .map(ArrayList::new)                // make modifiable copy
+      .map(doto(list -> list.add(42)))    // add method returns boolean
+      .map(doto(Collections::shuffle))    // shuffle method is void
+      .map(Collections::unmodifiableList) // make unmodifiable list
+      .map(doto(System.out::println));    // println method is void
 
   rec.get();
   rec.get();
