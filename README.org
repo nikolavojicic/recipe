@@ -132,7 +132,7 @@ Results:
 
 *** Creating recipes
 
-[[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/org/recipe/Recipe.java][Recipe]] is a functional interface that extends the [[https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html][Supplier]] interface.
+Recipe is a functional interface that extends the Supplier interface.
 Both of them represent functions that accept nothing and return some value.
 These functions are executed by calling their functional method ~get~.
 
@@ -182,7 +182,7 @@ Recipe extends Supplier by providing default methods that enable composition of 
 
 There is no way to chain those default method calls directly on the lambda expression
 / method reference so that the whole definition of a recipe is written as a single
-expression. One way to achieve this is to use the static factory method ~of~ as a wrapper.
+expression. One way to achieve this is to use the static factory method ~of~ as wrapper.
 
 #+begin_src java :noweb-ref STATIC :eval never
   public static final Recipe<String>
@@ -193,7 +193,7 @@ expression. One way to achieve this is to use the static factory method ~of~ as 
 
 All Recipe's methods that accept other recipes as arguments, accept any extension of the
 Supplier instead of the concrete Recipe type. That's why the method ~of~ can also be used
-as a converter to the Recipe type.
+as converter to the Recipe type.
 
 #+begin_src java :noweb-ref EXAMPLE_3 :eval never
   Supplier<UUID>    sup = UUID::randomUUID;
@@ -314,7 +314,7 @@ Results:
 
 **** Filtering
 
-Use the method ~filter~ to create a new recipe that returns only those values, produced by another recipe, that match the given predicate.
+Use the method ~filter~ to create a new recipe that returns only those values, produced by another recipe, that match a predicate.
 Predicates can be negated by the operator [[https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Predicate.html#not(java.util.function.Predicate)][Predicate#not]].
 
 #+begin_src java :noweb-ref EXAMPLE_8 :eval never
