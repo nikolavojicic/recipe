@@ -191,16 +191,16 @@ class RecipeTest {
     }
 
     @Test
-    void lift_null() {
+    void wrap_null() {
         Recipe<Integer> rec = Recipe.ofValue(5);
-        assertThrows(NullPointerException.class, () -> rec.lift(null));
+        assertThrows(NullPointerException.class, () -> rec.wrap(null));
     }
 
     @Test
-    void lift_nonNull() {
+    void wrap_nonNull() {
         Recipe<Long> rec = Recipe
                 .ofValue(5)
-                .lift(Stream::generate)
+                .wrap(Stream::generate)
                 .map(s -> s.limit(10))
                 .map(Stream::count);
         assertEquals(10, rec.get());

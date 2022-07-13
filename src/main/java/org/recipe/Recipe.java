@@ -100,16 +100,16 @@ public interface Recipe<T> extends Supplier<T> {
     }
 
     /**
-     * @return recipe that applies {@code lifter} to {@code this}
-     * @throws NullPointerException if {@code lifter} is {@code null}
+     * @return recipe that applies {@code wrapper} to {@code this}
+     * @throws NullPointerException if {@code wrapper} is {@code null}
      */
     default <R> Recipe<R>
-        lift
+        wrap
             (Function<? super   Recipe<? extends T>,
-                      ? extends R>                   lifter)
+                      ? extends R>                   wrapper)
     {
-        requireNonNull(lifter);
-        return () -> lifter.apply(this);
+        requireNonNull(wrapper);
+        return () -> wrapper.apply(this);
     }
 
     // ---------------- FACTORIES ----------------

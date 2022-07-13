@@ -37,7 +37,7 @@ class PairTest {
                                 .withSecond(pair.second())),
                         Pair::new)
                 .map(PairTest::assertAndGetEquals)
-                .lift(Stream::generate)
+                .wrap(Stream::generate)
                 .map(s -> s.limit(100).collect(toSet()));
         assertEquals(singleton(true), rec.get());
     }
