@@ -483,7 +483,7 @@ Results:
 : bdd27ccd@gmail.com
 : 559c052c@yahoo.com
 
-***** Second recipe is a supplier of the results of function application
+***** Second recipe produces results of function application
 
 For example, recipe that produces a pair of a list and the maximum element from that list. Operator [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/org/recipe/util/Fn.java#L64][Fn#fnrec]] can be used to wrap a function so that it returns a constant recipe of its result.
 
