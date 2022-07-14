@@ -505,7 +505,7 @@ Results:
 #+RESULTS: EXE_EXAMPLE_13
 : Pair[first=[1, 9, 3, 5, 7], second=9]
 
-In any of the cases above, it may happen that the binary function has side effects. Such functions are often ~void~ or return some other type that you might want to ignore. Use the operator [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/org/recipe/util/Fn.java#L36][Fn#dotwo]] to apply the function to the given objects and return the pair of those objects.
+In any of the cases above, it may happen that the binary function has side effects. Such function is often ~void~ or returns some other type that you might want to ignore. Use the operator [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/org/recipe/util/Fn.java#L36][Fn#dotwo]] to apply the function to the given objects and return the pair of those objects.
 
 #+begin_src java :noweb-ref EXAMPLE_14 :eval never
   Recipe<List<Integer>> rec = Recipe
