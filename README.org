@@ -417,7 +417,7 @@ Use the method ~bind~ to create a new recipe that takes values produced by two r
 
 ***** Second recipe depends on values produced by the first recipe
 
-For example, recipe that takes a random element from a list - the first recipe produces a list of elements, the second an index based on the size of the produced list and, finally, binary function uses those values to retrieve an element.
+For example, recipe that takes a random element from a list - the first recipe produces a list of elements, the second an index based on the size of the produced list. Binary function uses those values to retrieve an element.
 
 #+begin_src java :noweb-ref EXAMPLE_11 :eval never
   Recipe<Object> rec = Recipe
