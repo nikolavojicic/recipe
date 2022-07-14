@@ -106,12 +106,29 @@ Results:
           <<EXAMPLE_10>>
       }
 
+      public static void example11() {
+          <<EXAMPLE_11>>
+      }
+
+      public static void example12() {
+          <<EXAMPLE_12>>
+      }
+
+      public static void example13() {
+          <<EXAMPLE_13>>
+      }
+
+      public static void example14() {
+          <<EXAMPLE_14>>
+      }
+
   }
 #+end_src
 
 #+begin_src java :noweb-ref IMPORT :eval never
   import org.recipe.Recipe;
   import org.recipe.exception.RecipeFilterException;
+  import org.recipe.util.Pair;
 
   import static org.recipe.util.Fn.*;
 
@@ -121,12 +138,14 @@ Results:
   import java.util.Map;
   import java.util.Objects;
   import java.util.UUID;
+  import java.util.concurrent.atomic.AtomicInteger;
   import java.util.concurrent.atomic.AtomicLong;
   import java.util.function.Predicate;
   import java.util.function.Supplier;
   import java.util.stream.Stream;
 
   import static java.util.Arrays.asList;
+  import static java.util.Collections.synchronizedList;
   import static java.util.concurrent.ThreadLocalRandom.current;
 #+end_src
 
@@ -394,9 +413,133 @@ Results:
 
 **** Binding
 
+Use the method ~bind~ to create a new recipe that takes values produced by two recipes and combines them with a binary function. There are three common cases:
+
+***** Second recipe depends on values produced by the first recipe
+
+For example, recipe that takes a random element from a list - the first recipe produces a list of elements, the second an index based on the size of the produced list and, finally, binary function uses those values to retrieve an element.
+
+#+begin_src java :noweb-ref EXAMPLE_11 :eval never
+  Recipe<Object> rec = Recipe
+      .oneOf(() -> asList(1, 2, 3, 4),
+             () -> asList("foo", "bar", "baz"))
+      .bind(list -> () -> current().nextInt(0, list.size()), List::get);
+
+  System.out.println(rec.get());
+  System.out.println(rec.get());
+  System.out.println(rec.get());
+#+end_src
+
+#+name: EXE_EXAMPLE_11
+#+begin_src java :results output :exports results
+  Examples.example11();
+#+end_src
+
+Results:
+#+RESULTS: EXE_EXAMPLE_11
+: bar
+: baz
+: 4
+
+This is a very common pattern. To make it more readable, creation of the second recipe can be written as a method reference, with the help of static method ~recIndex~.
+
+#+begin_src java :noweb-ref STATIC :eval never
+  public static Recipe<String>
+      REC_EMAIL_DOMAIN = Recipe
+          .ofValue(asList("gmail.com", "yahoo.com", "proton.me"))
+          .bind(Examples::recIndex, List::get);
+
+  public static Recipe<Integer> recIndex(List<?> list) {
+      if (list.isEmpty())
+          throw new IllegalArgumentException("empty list");
+      return () -> current().nextInt(0, list.size());
+  }
+#+end_src
+
+If the first recipe depends on the value produced by the second recipe, then swap their order.
+
+***** Recipes do not depend on each other
+
+For example, an email address consists of two parts, a local part and a domain, joined with the symbol ~@~. Both parts can be generated independently. Operator [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/org/recipe/util/Fn.java#L52][Fn#recfn]] can be used instead of function with ignored argument.
+
+#+begin_src java :noweb-ref EXAMPLE_12 :eval never
+  Recipe<String> recEmail =
+      REC_UUID_STR
+          .map(local -> local.substring(0, 8))
+          .bind(recfn(REC_EMAIL_DOMAIN), // __ -> REC_EMAIL_DOMAIN
+                (local, domain) -> local + "@" + domain);
+
+  System.out.println(recEmail.get());
+  System.out.println(recEmail.get());
+#+end_src
+
+#+name: EXE_EXAMPLE_12
+#+begin_src java :results output :exports results
+  Examples.example12();
+#+end_src
+
+Results:
+#+RESULTS: EXE_EXAMPLE_12
+: bdd27ccd@gmail.com
+: 559c052c@yahoo.com
+
+***** Second recipe is a supplier of the results of function application
+
+For example, recipe that produces a pair of a list and the maximum element from that list. Operator [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/org/recipe/util/Fn.java#L64][Fn#fnrec]] can be used to wrap a function so that it returns a constant recipe of its result.
+
+#+begin_src java :noweb-ref EXAMPLE_13 :eval never
+  Recipe<Pair<List<Integer>, Integer>> rec = Recipe
+      .ofValue(asList(1, 9, 3, 5, 7))
+      // list -> Recipe.ofValue(Collections.max(list))
+      .bind(fnrec(Collections::max), Pair::new);
+
+  System.out.println(rec.get());
+#+end_src
+
+#+name: EXE_EXAMPLE_13
+#+begin_src java :results output :exports results
+  Examples.example13();
+#+end_src
+
+Results:
+#+RESULTS: EXE_EXAMPLE_13
+: Pair[first=[1, 9, 3, 5, 7], second=9]
+
+In any of the cases above, it may happen that the binary function has side effects. Such functions are often ~void~ or return some other type that you might want to ignore. Use the operator [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/org/recipe/util/Fn.java#L36][Fn#dotwo]] to apply the function to the given objects and return the pair of those objects.
+
+#+begin_src java :noweb-ref EXAMPLE_14 :eval never
+  Recipe<List<Integer>> rec = Recipe
+      .ofValue(synchronizedList(new ArrayList<Integer>()))
+      .bind(recfn(Recipe
+                  .ofValue(new AtomicInteger())
+                  .map(AtomicInteger::incrementAndGet)),
+            dotwo(List::add)) // add returns boolean
+      .map(Pair::first)
+      .map(Collections::unmodifiableList);
+
+  System.out.println(rec.get());
+  System.out.println(rec.get());
+  System.out.println(rec.get());
+#+end_src
+
+#+name: EXE_EXAMPLE_14
+#+begin_src java :results output :exports results
+  Examples.example14();
+#+end_src
+
+Results:
+#+RESULTS: EXE_EXAMPLE_14
+: [1]
+: [1, 2]
+: [1, 2, 3]
+
 **** Flattening
 
 **** Wrapping
+
+*** Generating numbers
+
+*** Generating text
 
 *** Generating POJOs or Records
 
@@ -407,9 +550,5 @@ Results:
 **** Builders
 
 **** Constructors
-
-*** Generating numbers
-
-*** Generating text
 
 *** Dependency injection
