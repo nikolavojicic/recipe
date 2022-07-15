@@ -515,6 +515,8 @@ In any of the cases above, it may happen that the binary function has side effec
                   .map(AtomicInteger::incrementAndGet)),
             dotwo(List::add)) // add returns boolean
       .map(Pair::first)
+      // .map(List::copyOf) in Java 10+
+      .map(ArrayList::new)
       .map(Collections::unmodifiableList);
 
   System.out.println(rec.get());
