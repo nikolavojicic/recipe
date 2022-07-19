@@ -642,7 +642,7 @@ Methods of the class [[https://docs.oracle.com/javase/8/docs/api/java/util/concu
 
 **** Unbounded
 
-Note that these recipes produce less random values, e.g., any union (~or~, ~oneOf~) with the ~*_ZERO~ recipe will generate zeros more frequently. This behavior can be useful though, because zero is an edge case.
+Note that these recipes produce less random values, e.g., any union (~or~, ~oneOf~) with the ~*_ZERO_*~ recipe will generate zeros more frequently. This behavior can be useful though, because zero is an edge case.
 
 #+begin_src java :noweb-ref STATIC :eval never
   public static final Recipe<Integer>
@@ -650,28 +650,28 @@ Note that these recipes produce less random values, e.g., any union (~or~, ~oneO
       REC_NEG_INT  = recInt(Integer.MIN_VALUE, 0),
       REC_ZERO_INT = Recipe.ofValue(0),
       REC_NAT_INT  = REC_POS_INT.or(REC_ZERO_INT),
-      REC_INT      = Recipe.oneOf(REC_POS_INT, REC_ZERO_INT, REC_NEG_INT);
+      REC_INT      = Recipe.oneOf(REC_NEG_INT, REC_ZERO_INT, REC_POS_INT);
 
   public static final Recipe<Long>
       REC_POS_LONG  = recLong(0, Long.MAX_VALUE).map(x -> x + 1),
       REC_NEG_LONG  = recLong(Long.MIN_VALUE, 0),
       REC_ZERO_LONG = Recipe.ofValue(0L),
       REC_NAT_LONG  = REC_POS_LONG.or(REC_ZERO_LONG),
-      REC_LONG      = Recipe.oneOf(REC_POS_LONG, REC_ZERO_LONG, REC_NEG_LONG);
+      REC_LONG      = Recipe.oneOf(REC_NEG_LONG, REC_ZERO_LONG, REC_POS_LONG);
 
   public static final Recipe<Double>
       REC_POS_DOUBLE  = Recipe.of(() -> current().nextDouble()).filter(x -> x != 0).map(Math::abs),
       REC_NEG_DOUBLE  = REC_POS_DOUBLE.map(x -> -x),
       REC_ZERO_DOUBLE = Recipe.ofValue(0.0),
       REC_NAT_DOUBLE  = REC_POS_DOUBLE.or(REC_ZERO_DOUBLE),
-      REC_DOUBLE      = Recipe.oneOf(REC_POS_DOUBLE, REC_ZERO_DOUBLE, REC_NEG_DOUBLE);
+      REC_DOUBLE      = Recipe.oneOf(REC_NEG_DOUBLE, REC_ZERO_DOUBLE, REC_POS_DOUBLE);
 
   public static final Recipe<BigDecimal>
       REC_POS_BIGDEC  = REC_POS_DOUBLE.filter(Double::isFinite).map(BigDecimal::valueOf),
       REC_NEG_BIGDEC  = REC_POS_BIGDEC.map(BigDecimal::negate),
       REC_ZERO_BIGDEC = Recipe.ofValue(ZERO),
       REC_NAT_BIGDEC  = REC_POS_BIGDEC.or(REC_ZERO_BIGDEC),
-      REC_BIGDEC      = Recipe.oneOf(REC_POS_BIGDEC, REC_ZERO_BIGDEC, REC_NEG_BIGDEC);
+      REC_BIGDEC      = Recipe.oneOf(REC_NEG_BIGDEC, REC_ZERO_BIGDEC, REC_POS_BIGDEC);
 
   public static final Recipe<Number>
       REC_POS_NUMBER  = Recipe.oneOf(REC_POS_INT,  REC_POS_LONG,  REC_POS_DOUBLE,  REC_POS_BIGDEC),
