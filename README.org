@@ -47,6 +47,25 @@ Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
 
       // --------------------------------------
 
+      @FunctionalInterface
+      public static interface Executable {
+          void execute() throws Throwable;
+      }
+
+      @SuppressWarnings("unchecked")
+      public static <T extends Throwable> T assertThrows(Class<T> expectedType, Executable executable) {
+          requireNonNull(expectedType);
+          requireNonNull(executable);
+          try {
+              executable.execute();
+          } catch (Throwable ex) {
+              if (ex.getClass().equals(expectedType))
+                  return (T) ex;
+              throw new AssertionError("Expected: " + expectedType + " Actual: " + ex.getClass());
+          }
+          throw new AssertionError("Expected " + expectedType + " to be thrown but nothing was thrown.");
+      }
+
       public static <T> Predicate<T> not(Predicate<T> predicate) {
           return predicate.negate();
       }
@@ -111,6 +130,14 @@ Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
           <<EXAMPLE_14>>
       }
 
+      public static void example15() {
+          <<EXAMPLE_15>>
+      }
+
+      public static void example16() {
+          <<EXAMPLE_16>>
+      }
+
   }
 #+end_src
 
@@ -121,6 +148,7 @@ Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
 
   import static org.recipe.util.Fn.*;
 
+  import java.math.BigDecimal;
   import java.util.ArrayList;
   import java.util.Collections;
   import java.util.List;
@@ -133,9 +161,13 @@ Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
   import java.util.function.Supplier;
   import java.util.stream.Stream;
 
+  import static java.lang.System.lineSeparator;
+  import static java.math.BigDecimal.ZERO;
   import static java.util.Arrays.asList;
   import static java.util.Collections.synchronizedList;
+  import static java.util.Objects.requireNonNull;
   import static java.util.concurrent.ThreadLocalRandom.current;
+  import static java.util.stream.Collectors.toList;
 #+end_src
 
 *** Creating recipes
@@ -525,11 +557,129 @@ Results:
 : [1, 2]
 : [1, 2, 3]
 
-**** Flattening
-
 **** Wrapping
 
+Use the method ~wrap~ to create a new recipe that applies a function to the underlying recipe.
+
+This is commonly used with the static factory method [[https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html#generate-java.util.function.Supplier-][Stream#generate]], which creates an infinite stream of values produced by the provided supplier / recipe.
+
+#+begin_src java :noweb-ref EXAMPLE_15 :eval never
+  Recipe<List<Integer>> rec = recInt(-100, 100)
+      .wrap(Stream::generate)
+      .bind(recfn(recInt(1, 6)), Stream::limit)
+      .map(stream -> stream.collect(toList()));
+
+  System.out.println(rec.get());
+  System.out.println(rec.get());
+  System.out.println(rec.get());
+#+end_src
+
+#+name: EXE_EXAMPLE_15
+#+begin_src java :results output :exports results
+  Examples.example15();
+#+end_src
+
+Results:
+#+RESULTS: EXE_EXAMPLE_15
+: [26, -68, -90, -23, 65]
+: [85, -30, 82, 10, -4]
+: [69, 64, -58]
+
+Handling runtime exceptions is another use case, e.g., with JUnit's [[https://junit.org/junit5/docs/5.8.2/api/org.junit.jupiter.api/org/junit/jupiter/api/Assertions.html#assertThrows(java.lang.Class,org.junit.jupiter.api.function.Executable)][Assertions#assertThrows]].
+
+#+begin_src java :noweb-ref EXAMPLE_16 :eval never
+  REC_INT
+      .map(x -> x / 0) // divide by zero!
+      .wrap(rec -> assertThrows(ArithmeticException.class, rec::get))
+      .map(ArithmeticException::getMessage)
+      .map(doto(System.out::println))
+      .get();
+#+end_src
+
+#+name: EXE_EXAMPLE_16
+#+begin_src java :results output :exports results
+  Examples.example16();
+#+end_src
+
+Results:
+#+RESULTS: EXE_EXAMPLE_16
+: / by zero
+
+**** Flattening
+
 *** Generating numbers
+
+**** Bounded
+
+Methods of the class [[https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadLocalRandom.html][ThreadLocalRandom]] are used here, but you can delegate to any number generator.
+
+#+begin_src java :noweb-ref STATIC :eval never
+  public static Recipe<Integer> recInt(int origin, int bound) {
+      current().nextInt(origin, bound); // check constraints
+      return () -> current().nextInt(origin, bound);
+  }
+
+  public static Recipe<Long> recLong(long origin, long bound) {
+      current().nextLong(origin, bound); // check constraints
+      return () -> current().nextLong(origin, bound);
+  }
+
+  public static Recipe<Double> recDouble(double origin, double bound) {
+      current().nextDouble(origin, bound); // check constraints
+      return () -> current().nextDouble(origin, bound);
+  }
+
+  public static Recipe<BigDecimal> recBigdec(double origin, double bound) {
+      return recDouble(origin, bound)
+          .filter(Double::isFinite)
+          .map(BigDecimal::valueOf);
+  }
+
+  public static Recipe<BigDecimal> recBigdec(BigDecimal origin, BigDecimal bound) {
+      return recBigdec(origin.doubleValue(), bound.doubleValue());
+  }
+#+end_src
+
+**** Unbounded
+
+Note that these recipes produce less random values, e.g., any union (~or~, ~oneOf~) with the ~*_ZERO~ recipe will generate zeros more frequently. This behavior can be useful though, because zero is an edge case.
+
+#+begin_src java :noweb-ref STATIC :eval never
+  public static final Recipe<Integer>
+      REC_POS_INT  = recInt(0, Integer.MAX_VALUE).map(x -> x + 1),
+      REC_NEG_INT  = recInt(Integer.MIN_VALUE, 0),
+      REC_ZERO_INT = Recipe.ofValue(0),
+      REC_NAT_INT  = REC_POS_INT.or(REC_ZERO_INT),
+      REC_INT      = Recipe.oneOf(REC_POS_INT, REC_ZERO_INT, REC_NEG_INT);
+
+  public static final Recipe<Long>
+      REC_POS_LONG  = recLong(0, Long.MAX_VALUE).map(x -> x + 1),
+      REC_NEG_LONG  = recLong(Long.MIN_VALUE, 0),
+      REC_ZERO_LONG = Recipe.ofValue(0L),
+      REC_NAT_LONG  = REC_POS_LONG.or(REC_ZERO_LONG),
+      REC_LONG      = Recipe.oneOf(REC_POS_LONG, REC_ZERO_LONG, REC_NEG_LONG);
+
+  public static final Recipe<Double>
+      REC_POS_DOUBLE  = Recipe.of(() -> current().nextDouble()).filter(x -> x != 0).map(Math::abs),
+      REC_NEG_DOUBLE  = REC_POS_DOUBLE.map(x -> -x),
+      REC_ZERO_DOUBLE = Recipe.ofValue(0.0),
+      REC_NAT_DOUBLE  = REC_POS_DOUBLE.or(REC_ZERO_DOUBLE),
+      REC_DOUBLE      = Recipe.oneOf(REC_POS_DOUBLE, REC_ZERO_DOUBLE, REC_NEG_DOUBLE);
+
+  public static final Recipe<BigDecimal>
+      REC_POS_BIGDEC  = REC_POS_DOUBLE.filter(Double::isFinite).map(BigDecimal::valueOf),
+      REC_NEG_BIGDEC  = REC_POS_BIGDEC.map(BigDecimal::negate),
+      REC_ZERO_BIGDEC = Recipe.ofValue(ZERO),
+      REC_NAT_BIGDEC  = REC_POS_BIGDEC.or(REC_ZERO_BIGDEC),
+      REC_BIGDEC      = Recipe.oneOf(REC_POS_BIGDEC, REC_ZERO_BIGDEC, REC_NEG_BIGDEC);
+
+  public static final Recipe<Number>
+      REC_POS_NUMBER  = Recipe.oneOf(REC_POS_INT,  REC_POS_LONG,  REC_POS_DOUBLE,  REC_POS_BIGDEC),
+      REC_NEG_NUMBER  = Recipe.oneOf(REC_NEG_INT,  REC_NEG_LONG,  REC_NEG_DOUBLE,  REC_NEG_BIGDEC),
+      REC_ZERO_NUMBER = Recipe.oneOf(REC_ZERO_INT, REC_ZERO_LONG, REC_ZERO_DOUBLE, REC_ZERO_BIGDEC),
+      REC_NAT_NUMBER  = Recipe.oneOf(REC_NAT_INT,  REC_NAT_LONG,  REC_NAT_DOUBLE,  REC_NAT_BIGDEC),
+      REC_NUMBER      = Recipe.oneOf(REC_INT,      REC_LONG,      REC_DOUBLE,      REC_BIGDEC);
+#+end_src
 
 *** Generating text
 
