@@ -63,7 +63,7 @@ Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
                   return (T) ex;
               throw new AssertionError("Expected: " + expectedType + " Actual: " + ex.getClass());
           }
-          throw new AssertionError("Expected " + expectedType + " to be thrown but nothing was thrown.");
+          throw new AssertionError("Expected " + expectedType + " to be thrown but nothing was thrown");
       }
 
       public static <T> Predicate<T> not(Predicate<T> predicate) {
@@ -138,6 +138,14 @@ Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
           <<EXAMPLE_16>>
       }
 
+      public static void example17() {
+          <<EXAMPLE_17>>
+      }
+
+      public static void example18() {
+          <<EXAMPLE_18>>
+      }
+
   }
 #+end_src
 
@@ -151,6 +159,7 @@ Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
   import java.math.BigDecimal;
   import java.util.ArrayList;
   import java.util.Collections;
+  import java.util.HashMap;
   import java.util.List;
   import java.util.Map;
   import java.util.Objects;
@@ -167,7 +176,8 @@ Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
   import static java.util.Collections.synchronizedList;
   import static java.util.Objects.requireNonNull;
   import static java.util.concurrent.ThreadLocalRandom.current;
-  import static java.util.stream.Collectors.toList;
+  import static java.util.function.Function.identity;
+  import static java.util.stream.Collectors.*;
 #+end_src
 
 *** Creating recipes
@@ -606,6 +616,54 @@ Results:
 : / by zero
 
 **** Flattening
+
+Whenever a (binary) function provided to ~map~ or ~bind~ returns a recipe, the overall recipe type can be flattened (from ~Recipe<Recipe<T>>~ to ~Recipe<T>~) by chaining an additional ~.map(Recipe::get)~ call, while preserving the same behavior.
+
+Recipe for recipes is useful for creating unions of recipes. The example bellow is similar to the method ~oneOf~ but it accepts weight for each recipe to determine the frequency of picking that recipe.
+
+#+begin_src java :noweb-ref STATIC :eval never
+  public static <T> Recipe<T> recFreq(Map<? extends Recipe<? extends T>, Integer> frequencies) {
+      // naive implementation
+      List<Recipe<? extends T>> recipes = frequencies
+          .entrySet().stream()
+          .filter(e -> e.getValue() > 0)
+          .flatMap(e -> Stream.generate(e::getKey).limit(e.getValue()))
+          .collect(toList());
+      if (recipes.isEmpty())
+          throw new IllegalArgumentException("No positive frequencies.");
+      return Recipe
+          .ofValue(recipes)
+          .bind(Examples::recIndex, List::get)
+          .map(Recipe::get); // flatten
+  }
+#+end_src
+
+For example, recipe that produces ~foo~ 50%, ~bar~ 20% and ~baz~ 30% of the time.
+
+#+begin_src java :noweb-ref EXAMPLE_17 :eval never
+  Map<Recipe<String>, Integer> frequencies = new HashMap<>();
+  frequencies.put(() -> "foo", 5);
+  frequencies.put(() -> "bar", 2);
+  frequencies.put(() -> "baz", 3);
+
+  recFreq(frequencies)
+      .wrap(Stream::generate)
+      .map(stream -> stream.limit(1000))
+      .map(stream -> stream.collect(groupingBy(identity(), counting())))
+      .get()
+      .forEach((k, v) -> System.out.printf("%s was generated %d times\n", k, v));
+#+end_src
+
+#+name: EXE_EXAMPLE_17
+#+begin_src java :results output :exports results
+  Examples.example17();
+#+end_src
+
+Results:
+#+RESULTS: EXE_EXAMPLE_17
+: foo was generated 494 times
+: bar was generated 199 times
+: baz was generated 307 times
 
 *** Generating numbers
 
