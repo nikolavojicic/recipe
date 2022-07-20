@@ -745,7 +745,7 @@ Because strings are arrays of characters, the most general approach is to start 
 
 #+begin_src java :noweb-ref STATIC :eval never
   public static final List<Character>
-      DIGITS = asList
+      NUMERIC = asList
       ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'),
       ALPHABET = asList
       ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
@@ -762,7 +762,7 @@ Because strings are arrays of characters, the most general approach is to start 
       REC_ALPHA        = REC_ALPHA_UPPER
                           .or(REC_ALPHA_LOWER),
       REC_NUMERIC      = Recipe
-                          .ofValue(DIGITS)
+                          .ofValue(NUMERIC)
                           .bind(Examples::recIndex, List::get),
       REC_ALPHANUMERIC = REC_ALPHA
                           .or(REC_NUMERIC),
