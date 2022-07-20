@@ -642,7 +642,7 @@ Methods of the class [[https://docs.oracle.com/javase/8/docs/api/java/util/concu
 
 **** Without bound params
 
-Note that these recipes produce less random values, e.g., any union (~or~, ~oneOf~) with the ~*_ZERO_*~ recipe will generate zeros more frequently. This behavior can be useful though, because zero is an edge case.
+Note that these recipes produce less random values, e.g., any union (~or~, ~oneOf~) with the ~_ZERO_~ recipe will generate zeros more frequently. This behavior can be useful though, because zero is an edge case.
 
 #+begin_src java :noweb-ref STATIC :eval never
   public static final Recipe<Integer>
