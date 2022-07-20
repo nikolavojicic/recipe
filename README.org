@@ -780,7 +780,7 @@ Because strings are arrays of characters, the most general approach is to start 
   }
 #+end_src
 
-Method ~recString~ accepts any recipe for characters (or any union of such recipes) and the maximum length of the produced string.
+Method ~recString~ accepts any recipe for characters (or any union of such recipes) and the maximum length of the produced string. Here we are generating alphanumeric text with whitespaces:
 
 #+begin_src java :noweb-ref EXAMPLE_18 :eval never
   Map<Recipe<Character>, Integer> frequencies = new HashMap<>();
