@@ -741,6 +741,77 @@ Note that these recipes produce less random values, e.g., any union (~or~, ~oneO
 
 *** Generating text
 
+Because strings are arrays of characters, the most general approach is to start with recipes for characters. Recipe for strings can than ~wrap~ recipe for characters to produce a stream of characters and collect that stream into a string by concatenation.
+
+#+begin_src java :noweb-ref STATIC :eval never
+  public static final List<Character>
+      DIGITS = asList
+      ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'),
+      ALPHABET = asList
+      ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+       'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'),
+      WHITESPACE = asList
+      (' ', '\t', '\n', '\r');
+
+  public static final Recipe<Character>
+      REC_ALPHA_UPPER  = Recipe
+                          .ofValue(ALPHABET)
+                          .bind(Examples::recIndex, List::get),
+      REC_ALPHA_LOWER  = REC_ALPHA_UPPER
+                          .map(Character::toLowerCase),
+      REC_ALPHA        = REC_ALPHA_UPPER
+                          .or(REC_ALPHA_LOWER),
+      REC_NUMERIC      = Recipe
+                          .ofValue(DIGITS)
+                          .bind(Examples::recIndex, List::get),
+      REC_ALPHANUMERIC = REC_ALPHA
+                          .or(REC_NUMERIC),
+      REC_WHITESPACE   = Recipe
+                          .ofValue(WHITESPACE)
+                          .bind(Examples::recIndex, List::get);
+
+  public static Recipe<String> recString(Supplier<? extends Character> recipe, int maxLength) {
+      return Recipe
+          .of(recipe)
+          .map(Object::toString)
+          .wrap(Stream::generate)
+          .bind(recfn(recInt(0, maxLength).map(x -> x + 1)), Stream::limit)
+          .map(s -> s.collect(joining()));
+  }
+#+end_src
+
+Method ~recString~ accepts any recipe for characters or any union of such recipes.
+
+#+begin_src java :noweb-ref EXAMPLE_18 :eval never
+  Map<Recipe<Character>, Integer> frequencies = new HashMap<>();
+  frequencies.put(REC_ALPHANUMERIC, 9);
+  frequencies.put(REC_WHITESPACE,   1);
+
+  recString(recFreq(frequencies), 500)
+      .map(doto(System.out::println))
+      .get();
+#+end_src
+
+#+name: EXE_EXAMPLE_18
+#+begin_src java :results output :exports results :wrap src
+  Examples.example18();
+#+end_src
+
+Results:
+#+RESULTS: EXE_EXAMPLE_18
+#+begin_src
+Hm18Cr 98
+l526de54d7T160
+5QO23BaxV1Uz54539SDFU4C0p
+T3fs1TvV437oDT012Ny120fjIy6
+E
+68eZyb
+S7V
+3wZ7G0b6W972	6Kg4y333t0l
+i	f31W5b	U6pT908yYm1P	2llro2jC8m0989Mq9869
+mj05aE17z 8P9
+#+end_src
+
 *** Generating POJOs or Records
 
 **** Setters
