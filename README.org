@@ -146,6 +146,125 @@ Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
           <<EXAMPLE_18>>
       }
 
+      public static void example19() {
+          <<EXAMPLE_19>>
+      }
+
+      public static void example20() {
+          <<EXAMPLE_20>>
+      }
+
+      public static void example21() {
+          <<EXAMPLE_21>>
+      }
+
+      public static void example22() {
+          <<EXAMPLE_22>>
+      }
+
+  }
+
+  final class Account {
+
+      private final Integer       id;
+      private final String        username;
+      private final LocalDateTime createdAt;
+
+      public Account(Integer id, String username, LocalDateTime createdAt) {
+          this.id        = id;
+          this.username  = username;
+          this.createdAt = createdAt;
+      }
+
+      public Integer       id       () { return id;        }
+      public String        username () { return username;  }
+      public LocalDateTime createdAt() { return createdAt; }
+
+      public Account withId       (Integer       id       ) { return new Account(id, username, createdAt); }
+      public Account withUsername (String        username ) { return new Account(id, username, createdAt); }
+      public Account withCreatedAt(LocalDateTime createdAt) { return new Account(id, username, createdAt); }
+
+      public static Builder builder() {
+          return new Builder();
+      }
+
+      public static class Builder {
+
+          private Integer       id;
+          private String        username;
+          private LocalDateTime createdAt;
+
+          private Builder() {}
+
+          public Builder id       (Integer       val) { id        = val; return this; }
+          public Builder username (String        val) { username  = val; return this; }
+          public Builder createdAt(LocalDateTime val) { createdAt = val; return this; }
+
+          public Account build() {
+              return new Account(id, username, createdAt);
+          }
+
+      }
+
+      @Override
+      public boolean equals(Object obj) {
+          if (!(obj instanceof Account))
+              return false;
+          Account that = (Account) obj;
+          return Objects.equals(id,        that.id)
+              && Objects.equals(username,  that.username)
+              && Objects.equals(createdAt, that.createdAt);
+      }
+
+      @Override
+      public int hashCode() {
+          return Objects.hash(id, username, createdAt);
+      }
+
+      @Override
+      public String toString() {
+          return "Account[id=" + id + ", username=" + username + ", createdAt=" + createdAt + ']';
+      }
+
+  }
+
+  class Role {
+
+      private Integer id;
+      private String  name;
+
+      public Role() {}
+
+      public Role(Integer id, String name) {
+          this.id   = id;
+          this.name = name;
+      }
+
+      public Integer getId  () { return id;   }
+      public String  getName() { return name; }
+
+      public void setId  (Integer id)   { this.id   = id;   }
+      public void setName(String  name) { this.name = name; }
+
+      @Override
+      public boolean equals(Object obj) {
+          if (!(obj instanceof Role))
+              return false;
+          Role that = (Role) obj;
+          return Objects.equals(id,   that.id)
+              && Objects.equals(name, that.name);
+      }
+
+      @Override
+      public int hashCode() {
+          return Objects.hash(id, name);
+      }
+
+      @Override
+      public String toString() {
+          return "Role[id=" + id + ", name=" + name + ']';
+      }
+
   }
 #+end_src
 
@@ -157,6 +276,7 @@ Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
   import static org.recipe.util.Fn.*;
 
   import java.math.BigDecimal;
+  import java.time.LocalDateTime;
   import java.util.ArrayList;
   import java.util.Collections;
   import java.util.HashMap;
@@ -166,8 +286,7 @@ Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
   import java.util.UUID;
   import java.util.concurrent.atomic.AtomicInteger;
   import java.util.concurrent.atomic.AtomicLong;
-  import java.util.function.Predicate;
-  import java.util.function.Supplier;
+  import java.util.function.*;
   import java.util.stream.Stream;
 
   import static java.lang.System.lineSeparator;
@@ -812,14 +931,78 @@ i	f31W5b	U6pT908yYm1P	2llro2jC8m0989Mq9869
 mj05aE17z 8P9
 #+end_src
 
-*** Generating POJOs or Records
+*** Generating POJOs or records
 
-**** Setters
-
-**** Withers
+To generate builders and withers for Java 14 records, you can use [[https://github.com/Randgalt/record-builder][this library]].
 
 **** Builders
 
+#+begin_src java :noweb-ref STATIC :eval never
+  public static final Recipe<Account> REC_ACCOUNT = Recipe
+      .of(Account::builder)
+      .bind(recfn(recString(REC_ALPHANUMERIC, 10)), Account.Builder::username)
+      .bind(recfn(LocalDateTime::now),              Account.Builder::createdAt)
+      .map(Account.Builder::build);
+#+end_src
+
+**** Withers
+
+#+begin_src java :noweb-ref STATIC :eval never
+  public static final Recipe<Account> REC_ACCOUNT_WITH_INVALID_ID =
+      REC_ACCOUNT
+          .bind(recfn(REC_INT_NEG), Account::withId);
+#+end_src
+
+**** Setters
+
+#+begin_src java :noweb-ref STATIC :eval never
+  public static final Recipe<Role> REC_ROLE = Recipe
+      .of(Role::new)
+      .bind(recfn(REC_UUID_STR), dotwo(Role::setName))
+      .map(Pair::first);
+#+end_src
+
+To avoid wrapping of arguments to a pair and the ~.map(Pair::first)~ line, replace ~dotwo~ with an operator like this:
+
+#+begin_src java :noweb-ref STATIC :eval never
+  public static <T, U> BiFunction<T, U, T>
+      biFirst
+          (BiConsumer<? super T,
+                      ? super U> action)
+  {
+      requireNonNull(action);
+      return (x, y) -> {
+          action.accept(x, y);
+          return x;
+      };
+  }
+
+  public static final Recipe<Role> REC_ROLE_WITH_INVALID_ID =
+      REC_ROLE
+          .bind(recfn(REC_INT_NEG), biFirst(Role::setId));
+#+end_src
+
 **** Constructors
+
+Constructors with one argument are functions that can be used with the method ~map~.
+
+#+begin_src java :noweb-ref EXAMPLE_19 :eval never
+  Recipe<BigDecimal> rec = Recipe.ofValue("3.14").map(BigDecimal::new);
+#+end_src
+
+Constructors with two arguments are binary functions that can be used with the method ~bind~.
+
+#+begin_src java :noweb-ref EXAMPLE_20 :eval never
+  Recipe<Role> rec = REC_INT_POS.bind(recfn(REC_UUID_STR), Role::new);
+#+end_src
+
+If your only option is a constructor with more than two arguments, generation is still possible, but ugly.
+
+#+begin_src java :noweb-ref EXAMPLE_21 :eval never
+  Recipe<Account> rec = Recipe
+      .of(() -> new Account(null,
+                            recString(REC_ALPHANUMERIC, 10).get(),
+                            LocalDateTime.now()));
+#+end_src
 
 *** Dependency injection
