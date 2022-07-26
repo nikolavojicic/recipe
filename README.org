@@ -1040,7 +1040,7 @@ If the only option is a constructor with more than two arguments, generation is 
 
 *** Dependency injection
 
-When testing, I prefer to keep almost all recipes as ~static final~ fields.
+When testing, I prefer to keep reusable recipes as ~static final~ fields in separate, non-instantiable classes.
 
 Recipes may depend on "injected" objects that provide logic for side effects, such as selecting data from the database, inserting new data etc. Even though dependency injection in [[https://spring.io/][Spring]] leans toward non-static fields, there is a workaround that enables injection into static fields.
 
