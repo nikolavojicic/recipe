@@ -37,7 +37,11 @@ Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
 
 **** Add imports needed for examples
 
-#+begin_src java :noweb yes :tangle target/examples/Examples.java :classname Examples :results none :exports none
+#+begin_src java :noweb yes :tangle target/examples/ex/Examples.java :classname ex.Examples :results none :exports none
+  package ex;
+
+  import static ex.Examples.Beans.*;
+
   <<IMPORT>>
 
   public class Examples {
@@ -69,6 +73,10 @@ Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
       public static <T> Predicate<T> not(Predicate<T> predicate) {
           return predicate.negate();
       }
+
+      private static final Beans __IGNORE = new Examples()
+          .new Beans(new RoleService(),
+                     new AccountService());
 
       <<STATIC>>
 
@@ -266,6 +274,29 @@ Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
       }
 
   }
+
+  class RoleService {
+
+      public List<Role> selectAll() {
+          return asList(new Role(1, "admin"),
+                        new Role(2, "editor"),
+                        new Role(3, "designer"),
+                        new Role(4, "viewer"));
+      }
+
+  }
+
+  class AccountService {
+
+      private static final AtomicInteger ID = new AtomicInteger();
+
+      public Account save(Account account) {
+          return account.withId(ID.incrementAndGet());
+      }
+
+      public void addRole(Account account, Role role) {}
+
+  }
 #+end_src
 
 #+begin_src java :noweb-ref IMPORT :eval never
@@ -318,7 +349,7 @@ These functions are executed by calling their functional method ~get~.
 
 #+name: EXE_EXAMPLE_1
 #+begin_src java :results output :exports results
-  Examples.example1();
+  ex.Examples.example1();
 #+end_src
 
 Results:
@@ -336,7 +367,7 @@ Results:
 
 #+name: EXE_EXAMPLE_2
 #+begin_src java :results output :exports results
-  Examples.example2();
+  ex.Examples.example2();
 #+end_src
 
 Results:
@@ -376,7 +407,7 @@ as converter to the Recipe type.
 
 #+name: EXE_EXAMPLE_3
 #+begin_src java :results output :exports results
-  Examples.example3();
+  ex.Examples.example3();
 #+end_src
 
 Results:
@@ -398,7 +429,7 @@ Recipe that constantly returns the given reference can be created with the stati
 
 #+name: EXE_EXAMPLE_4
 #+begin_src java :results output :exports results
-  Examples.example4();
+  ex.Examples.example4();
 #+end_src
 
 Results:
@@ -419,7 +450,7 @@ This method is also useful for creating stateful recipes (provided argument shou
 
 #+name: EXE_EXAMPLE_5
 #+begin_src java :results output :exports results
-  Examples.example5();
+  ex.Examples.example5();
 #+end_src
 
 Results:
@@ -446,7 +477,7 @@ Recipe that randomly chooses a value from two recipes can be created by the meth
 
 #+name: EXE_EXAMPLE_6
 #+begin_src java :results output :exports results
-  Examples.example6();
+  ex.Examples.example6();
 #+end_src
 
 Results:
@@ -471,7 +502,7 @@ For a union of variable number of recipes, use the static factory method ~oneOf~
 
 #+name: EXE_EXAMPLE_7
 #+begin_src java :results output :exports results
-  Examples.example7();
+  ex.Examples.example7();
 #+end_src
 
 Results:
@@ -499,7 +530,7 @@ Predicates can be negated by the operator [[https://docs.oracle.com/en/java/java
 
 #+name: EXE_EXAMPLE_8
 #+begin_src java :results output :exports results
-  Examples.example8();
+  ex.Examples.example8();
 #+end_src
 
 Results:
@@ -523,7 +554,7 @@ When the given predicate cannot be satisfied after 100 tries, runtime exception 
 
 #+name: EXE_EXAMPLE_9
 #+begin_src java :results output :exports results
-  Examples.example9();
+  ex.Examples.example9();
 #+end_src
 
 Results:
@@ -554,7 +585,7 @@ Use the operator [[https://github.com/nikolavojicic/recipe/blob/master/src/main/
 
 #+name: EXE_EXAMPLE_10
 #+begin_src java :results output :exports results
-  Examples.example10();
+  ex.Examples.example10();
 #+end_src
 
 Results:
@@ -583,7 +614,7 @@ For example, recipe that takes a random element from a list - the first recipe p
 
 #+name: EXE_EXAMPLE_11
 #+begin_src java :results output :exports results
-  Examples.example11();
+  ex.Examples.example11();
 #+end_src
 
 Results:
@@ -626,7 +657,7 @@ For example, an email address consists of two parts, a local part and a domain, 
 
 #+name: EXE_EXAMPLE_12
 #+begin_src java :results output :exports results
-  Examples.example12();
+  ex.Examples.example12();
 #+end_src
 
 Results:
@@ -649,7 +680,7 @@ For example, recipe that produces a pair of a list and the maximum element from 
 
 #+name: EXE_EXAMPLE_13
 #+begin_src java :results output :exports results
-  Examples.example13();
+  ex.Examples.example13();
 #+end_src
 
 Results:
@@ -677,7 +708,7 @@ In any of the cases above, it may happen that the binary function has side effec
 
 #+name: EXE_EXAMPLE_14
 #+begin_src java :results output :exports results
-  Examples.example14();
+  ex.Examples.example14();
 #+end_src
 
 Results:
@@ -705,7 +736,7 @@ This is commonly used with the static factory method [[https://docs.oracle.com/j
 
 #+name: EXE_EXAMPLE_15
 #+begin_src java :results output :exports results
-  Examples.example15();
+  ex.Examples.example15();
 #+end_src
 
 Results:
@@ -727,7 +758,7 @@ Handling runtime exceptions is another use case, e.g., with JUnit's [[https://ju
 
 #+name: EXE_EXAMPLE_16
 #+begin_src java :results output :exports results
-  Examples.example16();
+  ex.Examples.example16();
 #+end_src
 
 Results:
@@ -775,7 +806,7 @@ For example, recipe that produces ~foo~ 50%, ~bar~ 20% and ~baz~ 30% of the time
 
 #+name: EXE_EXAMPLE_17
 #+begin_src java :results output :exports results
-  Examples.example17();
+  ex.Examples.example17();
 #+end_src
 
 Results:
@@ -913,7 +944,7 @@ Method ~recString~ accepts any recipe for characters (or any union of such recip
 
 #+name: EXE_EXAMPLE_18
 #+begin_src java :results output :exports results :wrap src
-  Examples.example18();
+  ex.Examples.example18();
 #+end_src
 
 Results:
@@ -996,7 +1027,7 @@ Constructors with two arguments are binary functions that can be used with the m
   Recipe<Role> rec = REC_INT_POS.bind(recfn(REC_UUID_STR), Role::new);
 #+end_src
 
-If your only option is a constructor with more than two arguments, generation is still possible, but ugly.
+If the only option is a constructor with more than two arguments, generation is still possible, but ugly.
 
 #+begin_src java :noweb-ref EXAMPLE_21 :eval never
   Recipe<Account> rec = Recipe
@@ -1006,3 +1037,62 @@ If your only option is a constructor with more than two arguments, generation is
 #+end_src
 
 *** Dependency injection
+
+When testing, I prefer to keep almost all recipes as ~static final~ fields.
+
+Recipes may depend on "injected" objects that provide logic for side effects, such as selecting data from the database, inserting new data etc. Even though dependency injection in [[https://spring.io/][Spring]] leans toward non-static fields, there is a workaround that enables injection into static fields.
+
+#+begin_src java :noweb-ref STATIC :eval never
+  // Uncomment comments below
+
+  // @org.springframework.stereotype.Component
+  public class Beans {
+
+      public static RoleService    roleService;
+      public static AccountService accountService;
+
+      // @org.springframework.beans.factory.annotation.Autowired
+      public Beans(RoleService    roleService,
+                   AccountService accountService)
+      {
+          Beans.roleService    = roleService;
+          Beans.accountService = accountService;
+      }
+
+  }
+#+end_src
+
+Now it is possible to use these services in static contexts.
+
+#+begin_src java :noweb-ref STATIC :eval never
+  public static final Recipe<Role> REC_ROLE_SAVED = Recipe
+      .ofValue(roleService.selectAll())
+      .bind(Examples::recIndex, List::get);
+
+  public static final Recipe<Account> REC_ACCOUNT_SAVED =
+      REC_ACCOUNT
+          .map(accountService::save);
+
+  public static final Recipe<Pair<Account, Role>> REC_ACCOUNT_WITH_ROLE =
+      REC_ACCOUNT_SAVED
+          .bind(recfn(REC_ROLE_SAVED), dotwo(accountService::addRole));
+#+end_src
+
+Note that ~REC_ROLE_SAVED~ selects all the roles only once, because ~ofValue~ is used.
+
+#+begin_src java :noweb-ref EXAMPLE_22 :eval never
+  REC_ACCOUNT_WITH_ROLE
+      .map(doto(System.out::println))
+      .get();
+#+end_src
+
+#+name: EXE_EXAMPLE_22
+#+begin_src java :results output :exports results
+  ex.Examples.example22();
+#+end_src
+
+Results:
+#+RESULTS: EXE_EXAMPLE_22
+: Pair[first=Account[id=1, username=a6mSFp5, createdAt=2022-07-26T04:04:52.020284], second=Role[id=2, name=editor]]
+
+Some people warn against this workaround mostly because of possible initialization gotchas. In my experience so far, there will not be any problems if you keep static injection, static recipe definitions and tests in separate classes.
