@@ -1103,4 +1103,4 @@ Some people warn against this workaround mostly because of possible initializati
 
 For the source code see the [[https://github.com/nikolavojicic/recipe/blob/master/LICENSE][LICENSE]] file.
 
-You can freely copy any code from this [[https://github.com/nikolavojicic/recipe#readme][README]] file.
+You can freely copy any code from this [[https://github.com/nikolavojicic/recipe#readme][README.org]] file.
