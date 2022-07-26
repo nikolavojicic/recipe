@@ -11,6 +11,8 @@
 Extends [[https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html][java.util.function.Supplier]] with higher-order methods that enable composition of
 suppliers and transformation and filtering of the results produced by the functional method ~get~.
 
+This project is stable, there won't be any breaking changes in new releases.
+
 ** Installation
 
 Requires *Java 8* or higher.
@@ -1095,4 +1097,10 @@ Results:
 #+RESULTS: EXE_EXAMPLE_22
 : Pair[first=Account[id=1, username=a6mSFp5, createdAt=2022-07-26T04:04:52.020284], second=Role[id=2, name=editor]]
 
-Some people warn against this workaround mostly because of possible initialization gotchas. In my experience so far, there will not be any problems if you keep static injection, static recipe definitions and tests in separate classes.
+Some people warn against this workaround mostly because of possible initialization gotchas. In my experience so far, there will not be any problems if you keep static injections, static recipe definitions and tests in separate classes.
+
+** License
+
+For the source code see the [[https://github.com/nikolavojicic/recipe/blob/master/LICENSE][LICENSE]] file.
+
+You can freely copy any code from this [[https://github.com/nikolavojicic/recipe#readme][README]] file.
