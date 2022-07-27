@@ -1096,7 +1096,7 @@ Results:
 #+RESULTS: EXE_EXAMPLE_22
 : Pair[first=Account[id=1, username=a6mSFp5, createdAt=2022-07-26T04:04:52.020284], second=Role[id=2, name=editor]]
 
-Some people warn against this workaround mostly because of possible initialization gotchas. In my experience so far, there will not be any problems if you keep static injections, static recipe definitions and tests in separate classes.
+Some people warn against this workaround mostly because of possible initialization gotchas. In my experience so far, there won’t be any problems if you keep static injections, static recipe definitions and tests in separate classes.
 
 ** License
 

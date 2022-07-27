@@ -6,8 +6,24 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.recipe</groupId>
     <artifactId>recipe</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Generate data from composable recipes.</description>
+    <url>https://github.com/nikolavojicic/recipe</url>
     <packaging>jar</packaging>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://github.com/nikolavojicic/recipe/blob/master/LICENSE</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>nikolavojicic</id>
+            <name>Nikola Vojičić</name>
+            <email>nikolavojicic@outlook.com</email>
+        </developer>
+    </developers>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
