@@ -104,6 +104,26 @@ class RecipeTest {
     }
 
     @Test
+    void oneOf_argumentMutation() {
+        Recipe<?>[] recs = new Recipe<?>[]{
+                () -> "foo",
+                () -> "bar",
+                () -> current().nextBoolean()
+        };
+        Recipe<?> rec = Recipe.oneOf(recs);
+        assertEquals(
+                Stream.of("foo", "bar", true, false).collect(toSet()),
+                Stream.generate(rec).limit(100).collect(toSet()));
+        recs[0] = null;
+        recs[1] = null;
+        recs[2] = null;
+        assertThrows(NullPointerException.class, () -> Recipe.oneOf(recs));
+        assertEquals(
+                Stream.of("foo", "bar", true, false).collect(toSet()),
+                Stream.generate(rec).limit(100).collect(toSet()));
+    }
+
+    @Test
     void map_null() {
         Recipe<Integer> rec = Recipe.ofValue(5);
         assertThrows(NullPointerException.class, () -> rec.map(null));
