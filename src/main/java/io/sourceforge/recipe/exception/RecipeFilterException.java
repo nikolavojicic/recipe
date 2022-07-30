@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: © 2022 Nikola Vojičić <nikolavojicic@outlook.com>
 // SPDX-License-Identifier: MIT
 
-package org.recipe.exception;
+package io.sourceforge.recipe.exception;
 
 public class RecipeFilterException extends RuntimeException {
 

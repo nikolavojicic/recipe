@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: © 2022 Nikola Vojičić <nikolavojicic@outlook.com>
 // SPDX-License-Identifier: MIT
 
-package org.recipe.util;
+package io.sourceforge.recipe.util;
 
-import org.recipe.Recipe;
+import io.sourceforge.recipe.Recipe;
 
 import java.util.function.*;
 

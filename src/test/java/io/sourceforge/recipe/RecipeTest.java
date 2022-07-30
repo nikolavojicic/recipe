@@ -1,11 +1,11 @@
 // SPDX-FileCopyrightText: © 2022 Nikola Vojičić <nikolavojicic@outlook.com>
 // SPDX-License-Identifier: MIT
 
-package org.recipe;
+package io.sourceforge.recipe;
 
 import org.junit.jupiter.api.Test;
-import org.recipe.exception.RecipeFilterException;
-import org.recipe.util.Pair;
+import io.sourceforge.recipe.exception.RecipeFilterException;
+import io.sourceforge.recipe.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ import static java.util.Collections.singleton;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static java.util.stream.Collectors.toSet;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.recipe.util.Fn.doto;
+import static io.sourceforge.recipe.util.Fn.doto;
 
 @SuppressWarnings({
         "ConstantConditions",

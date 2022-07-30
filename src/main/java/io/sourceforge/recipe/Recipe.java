@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: © 2022 Nikola Vojičić <nikolavojicic@outlook.com>
 // SPDX-License-Identifier: MIT
 
-package org.recipe;
+package io.sourceforge.recipe;
 
-import org.recipe.exception.RecipeFilterException;
+import io.sourceforge.recipe.exception.RecipeFilterException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static java.util.stream.Collectors.toList;
-import static org.recipe.util.Fn.fnrec;
+import static io.sourceforge.recipe.util.Fn.fnrec;
 
 /**
  * Extends {@link Supplier} with higher-order methods that enable composition

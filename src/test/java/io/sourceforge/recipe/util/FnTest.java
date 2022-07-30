@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: © 2022 Nikola Vojičić <nikolavojicic@outlook.com>
 // SPDX-License-Identifier: MIT
 
-package org.recipe.util;
+package io.sourceforge.recipe.util;
 
 import org.junit.jupiter.api.Test;
-import org.recipe.Recipe;
+import io.sourceforge.recipe.Recipe;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,7 +12,7 @@ import java.util.Set;
 import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.recipe.util.Fn.*;
+import static io.sourceforge.recipe.util.Fn.*;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 class FnTest {

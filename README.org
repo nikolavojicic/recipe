@@ -302,11 +302,11 @@ Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
 #+end_src
 
 #+begin_src java :noweb-ref IMPORT :eval never
-  import org.recipe.Recipe;
-  import org.recipe.exception.RecipeFilterException;
-  import org.recipe.util.Pair;
+  import io.sourceforge.recipe.Recipe;
+  import io.sourceforge.recipe.exception.RecipeFilterException;
+  import io.sourceforge.recipe.util.Pair;
 
-  import static org.recipe.util.Fn.*;
+  import static io.sourceforge.recipe.util.Fn.*;
 
   import java.math.BigDecimal;
   import java.time.LocalDateTime;
