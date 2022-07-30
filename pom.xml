@@ -24,6 +24,11 @@
             <email>nikolavojicic@outlook.com</email>
         </developer>
     </developers>
+    <scm>
+        <url>https://github.com/nikolavojicic/recipe/tree/master</url>
+        <connection>scm:git:git://github.com/nikolavojicic/recipe.git</connection>
+        <developerConnection>scm:git:ssh://github.com:nikolavojicic/recipe.git</developerConnection>
+    </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
