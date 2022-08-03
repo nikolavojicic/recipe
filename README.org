@@ -17,15 +17,21 @@ This project is stable, there won't be any breaking changes in new releases.
 
 Requires *Java 8* or higher.
 
-Currently, the main option for installation is [[https://jitpack.io/][Jitpack]]:
+*** Maven
 
-#+begin_src
-  dependencies {
-      implementation 'com.github.nikolavojicic:recipe:<COMMIT-HASH>'
-  }
+#+begin_src xml
+  <dependency>
+    <groupId>io.sourceforge.recipe</groupId>
+    <artifactId>recipe</artifactId>
+    <version>1.0.0</version>
+  </dependency>
 #+end_src
 
-*TODO*: Publish to the /Maven Central Repository/.
+*** Gradle
+
+#+begin_src text
+  implementation 'io.sourceforge.recipe:recipe:1.0.0'
+#+end_src
 
 ** Examples
 
