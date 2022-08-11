@@ -78,10 +78,6 @@ Requires *Java 8* or higher.
           throw new AssertionError("Expected " + expectedType + " to be thrown but nothing was thrown");
       }
 
-      public static <T> Predicate<T> not(Predicate<T> predicate) {
-          return predicate.negate();
-      }
-
       private static final Beans __IGNORE = new Examples()
           .new Beans(new RoleService(),
                      new AccountService());
@@ -523,13 +519,11 @@ Results:
 
 Use the method ~filter~ to create a new recipe that returns only those values, produced by another recipe, that match a predicate.
 
-Predicates can be negated by the operator [[https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Predicate.html#not(java.util.function.Predicate)][Predicate#not]] available in Java 11+ (but it is trivial to [[https://stackoverflow.com/a/22492361][write]]).
-
 #+begin_src java :noweb-ref EXAMPLE_8 :eval never
   Recipe<Double> rec = Recipe
       .of(() -> current().nextDouble())
       .filter(x -> x > 0)
-      .filter(not(x -> x.isInfinite()));
+      .filter(x -> !x.isInfinite());
 
   System.out.println(rec.get());
   System.out.println(rec.get());
