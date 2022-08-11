@@ -569,7 +569,7 @@ This can be fixed either by improving the underlying recipe (e.g., use ~nextInt(
 Use the method ~map~ to create a new recipe that applies a function to the values produced by another recipe.
 
 If the given function has side effects, it is often ~void~ or returns some other type that you might want to ignore.
-Use the operator [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/org/recipe/util/Fn.java#L21][Fn#doto]] to apply the function to the object and return that same object.
+Use the operator [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/io/sourceforge/recipe/util/Fn.java#L21][Fn#doto]] to apply the function to the object and return that same object.
 
 #+begin_src java :noweb-ref EXAMPLE_10 :eval never
   Recipe<List<Integer>> rec = Recipe
@@ -643,7 +643,7 @@ If the first recipe depends on the value produced by the second recipe, then swa
 
 ***** Recipes do not depend on each other
 
-For example, an email address consists of two parts, a local part and a domain, joined with the symbol ~@~. Both parts can be generated independently. Operator [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/org/recipe/util/Fn.java#L52][Fn#recfn]] can be used instead of function with ignored argument.
+For example, an email address consists of two parts, a local part and a domain, joined with the symbol ~@~. Both parts can be generated independently. Operator [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/io/sourceforge/recipe/util/Fn.java#L52][Fn#recfn]] can be used instead of function with ignored argument.
 
 #+begin_src java :noweb-ref EXAMPLE_12 :eval never
   Recipe<String> recEmail =
@@ -668,7 +668,7 @@ Results:
 
 ***** Second recipe produces results of function application
 
-For example, recipe that produces a pair of a list and the maximum element from that list. Operator [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/org/recipe/util/Fn.java#L64][Fn#fnrec]] can be used to wrap a function so that it returns a constant recipe of its result.
+For example, recipe that produces a pair of a list and the maximum element from that list. Operator [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/io/sourceforge/recipe/util/Fn.java#L64][Fn#fnrec]] can be used to wrap a function so that it returns a constant recipe of its result.
 
 #+begin_src java :noweb-ref EXAMPLE_13 :eval never
   Recipe<Pair<List<Integer>, Integer>> rec = Recipe
@@ -688,7 +688,7 @@ Results:
 #+RESULTS: EXE_EXAMPLE_13
 : Pair[first=[1, 9, 3, 5, 7], second=9]
 
-In any of the cases above, it may happen that the binary function has side effects. Such function is often ~void~ or returns some other type that you might want to ignore. Use the operator [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/org/recipe/util/Fn.java#L36][Fn#dotwo]] to apply the function to the given objects and return the pair of those objects.
+In any of the cases above, it may happen that the binary function has side effects. Such function is often ~void~ or returns some other type that you might want to ignore. Use the operator [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/io/sourceforge/recipe/util/Fn.java#L36][Fn#dotwo]] to apply the function to the given objects and return the pair of those objects.
 
 #+begin_src java :noweb-ref EXAMPLE_14 :eval never
   Recipe<List<Integer>> rec = Recipe
