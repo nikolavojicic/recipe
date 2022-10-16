@@ -797,11 +797,10 @@ For example, recipe that produces ~foo~ 50%, ~bar~ 20% and ~baz~ 30% of the time
   frequencies.put(() -> "bar", 2);
   frequencies.put(() -> "baz", 3);
 
-  recFreq(frequencies)
-      .wrap(Stream::generate)
-      .map(stream -> stream.limit(1000))
-      .map(stream -> stream.collect(groupingBy(identity(), counting())))
-      .get()
+  Stream
+      .generate(recFreq(frequencies))
+      .limit(1000)
+      .collect(groupingBy(identity(), counting()))
       .forEach((k, v) -> System.out.printf("%s was generated %d times\n", k, v));
 #+end_src
 
