@@ -12,10 +12,10 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static io.sourceforge.recipe.util.Fn.fnrec;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static java.util.stream.Collectors.toList;
-import static io.sourceforge.recipe.util.Fn.fnrec;
 
 /**
  * Extends {@link Supplier} with higher-order methods that enable composition
@@ -136,6 +136,30 @@ public interface Recipe<T> extends Supplier<T> {
     }
 
     /**
+     * @return recipe that constantly returns {@code null}
+     */
+    static <T> Recipe<T>
+        ofNull
+            ()
+    {
+        return ofValue(null);
+    }
+
+    /**
+     * @return recipe that randomly chooses between enum constants of the {@code type}
+     * @throws NullPointerException if {@code type} is {@code null}
+     **/
+    static <T extends Enum<T>> Recipe<T>
+        ofEnum
+            (Class<T> type)
+    {
+        T[] constants = type.getEnumConstants();
+        return Recipe
+                .ofValue(Arrays.asList(constants))
+                .bind(fnrec(__ -> current().nextInt(0, constants.length)), List::get);
+    }
+
+    /**
      * @return recipe that randomly chooses between {@code recipes}
      * @throws IllegalArgumentException if {@code recipes} is empty
      * @throws NullPointerException if any of {@code recipes} is {@code null}
@@ -149,7 +173,7 @@ public interface Recipe<T> extends Supplier<T> {
             throw new IllegalArgumentException("Empty recipes.");
         return Recipe
                 .ofValue(Arrays.stream(recipes).map(Recipe::of).collect(toList()))
-                .bind(fnrec(list -> current().nextInt(0, list.size())), List::get)
+                .bind(fnrec(__ -> current().nextInt(0, recipes.length)), List::get)
                 .map(Recipe::get);
     }
 

@@ -3,21 +3,22 @@
 
 package io.sourceforge.recipe;
 
-import org.junit.jupiter.api.Test;
 import io.sourceforge.recipe.exception.RecipeFilterException;
 import io.sourceforge.recipe.util.Pair;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
+import static io.sourceforge.recipe.util.Fn.doto;
 import static java.util.Collections.singleton;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static java.util.stream.Collectors.toSet;
 import static org.junit.jupiter.api.Assertions.*;
-import static io.sourceforge.recipe.util.Fn.doto;
 
 @SuppressWarnings({
         "ConstantConditions",
@@ -67,6 +68,25 @@ class RecipeTest {
                 .map(AtomicInteger::incrementAndGet);
         assertEquals(1, rec.get());
         assertEquals(2, rec.get());
+    }
+
+    @Test
+    void ofNull_test() {
+        assertThrows(RecipeFilterException.class, Recipe.ofNull().filter(Objects::nonNull)::get);
+    }
+
+    @Test
+    void ofEnum_null() {
+        assertThrows(NullPointerException.class, () -> Recipe.ofEnum(null));
+    }
+
+    enum E {X, Y, Z}
+
+    @Test
+    void ofEnum_nonNull() {
+        assertEquals(
+                EnumSet.allOf(E.class),
+                Stream.generate(Recipe.ofEnum(E.class)).limit(100).collect(toSet()));
     }
 
     @Test
