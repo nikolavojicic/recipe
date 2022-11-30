@@ -511,7 +511,8 @@ For a union of variable number of recipes, use the static factory method ~oneOf~
   Recipe<String> rec = Recipe
       .oneOf(() -> "foo",
              REC_UUID_STR,
-             Recipe.ofValue("bar"));
+             Recipe.ofValue("bar"),
+             REC_CONTACT_TYPE.map(ContactType::name));
 
   System.out.println(rec.get());
   System.out.println(rec.get());
@@ -526,10 +527,10 @@ For a union of variable number of recipes, use the static factory method ~oneOf~
 
 Results:
 #+RESULTS: EXE_EXAMPLE_7
-: fa4dab90-3da6-4008-82f2-d84151a75f3b
-: foo
-: 596afd9a-5117-49b5-b2cf-d78f0036b04f
 : bar
+: 37d16e60-e337-47c4-b214-41bcbbb962d1
+: be1dcfc8-f5f1-476e-87e6-0ec8ff0e24e9
+: MOBILE_PHONE
 
 **** Filtering
 
