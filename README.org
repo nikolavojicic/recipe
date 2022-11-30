@@ -417,7 +417,7 @@ Results:
 #+RESULTS: EXE_EXAMPLE_3
 : 36
 
-**** Constant Recipe
+**** Reference Recipe
 
 Recipe that constantly returns the given reference can be created with the static factory method ~ofValue~.
 
@@ -461,6 +461,22 @@ Results:
 : 1
 : 2
 : 3
+
+Recipe that constantly returns ~null~ can be created with the static factory method ~ofNull~.
+
+**** Enum Recipe
+
+Recipe that randomly chooses between constants of an Enum can be created with the static factory method ~ofEnum~.
+
+#+begin_src java :noweb-ref STATIC :eval never
+  public static enum ContactType {
+      EMAIL, MOBILE_PHONE, LANDLINE
+  }
+
+  public static final Recipe<ContactType>
+      REC_CONTACT_TYPE = Recipe
+          .ofEnum(ContactType.class);
+#+end_src
 
 *** Composing recipes
 
