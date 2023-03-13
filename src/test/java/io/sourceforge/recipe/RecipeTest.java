@@ -80,13 +80,29 @@ class RecipeTest {
         assertThrows(NullPointerException.class, () -> Recipe.ofEnum(null));
     }
 
-    enum E {X, Y, Z}
+    enum E0 {}
 
     @Test
-    void ofEnum_nonNull() {
+    void ofEnum_withoutConstants() {
+        assertThrows(IllegalArgumentException.class, () -> Recipe.ofEnum(E0.class));
+    }
+
+    enum E1 {X}
+
+    @Test
+    void ofEnum_withOneConstant() {
         assertEquals(
-                EnumSet.allOf(E.class),
-                Stream.generate(Recipe.ofEnum(E.class)).limit(100).collect(toSet()));
+                EnumSet.allOf(E1.class),
+                Stream.generate(Recipe.ofEnum(E1.class)).limit(100).collect(toSet()));
+    }
+
+    enum E3 {X, Y, Z}
+
+    @Test
+    void ofEnum_withMultipleConstants() {
+        assertEquals(
+                EnumSet.allOf(E3.class),
+                Stream.generate(Recipe.ofEnum(E3.class)).limit(100).collect(toSet()));
     }
 
     @Test

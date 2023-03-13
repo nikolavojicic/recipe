@@ -148,12 +148,15 @@ public interface Recipe<T> extends Supplier<T> {
     /**
      * @return recipe that randomly chooses between enum constants of the {@code type}
      * @throws NullPointerException if {@code type} is {@code null}
+     * @throws IllegalArgumentException if {@code type} has no enum constants
      **/
     static <T extends Enum<T>> Recipe<T>
         ofEnum
             (Class<T> type)
     {
         T[] constants = type.getEnumConstants();
+        if (constants.length == 0)
+            throw new IllegalArgumentException("Empty enum.");
         return Recipe
                 .ofValue(Arrays.asList(constants))
                 .bind(fnrec(__ -> current().nextInt(0, constants.length)), List::get);
