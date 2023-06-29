@@ -39,11 +39,11 @@ public final class Pair<T, U> {
     }
 
     public <X> Pair<X, U> mapFirst(Function<? super T, ? extends X> mapper) {
-        return new Pair<>(mapper.apply(first), second);
+        return withFirst(mapper.apply(first));
     }
 
     public <X> Pair<T, X> mapSecond(Function<? super U, ? extends X> mapper) {
-        return new Pair<>(first, mapper.apply(second));
+        return withSecond(mapper.apply(second));
     }
 
     @Override
