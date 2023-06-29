@@ -8,8 +8,7 @@
 
 ** Introduction
 
-Extends [[https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html][java.util.function.Supplier]] with higher-order methods that enable composition of
-suppliers and transformation and filtering of the results produced by the functional method ~get~.
+Extends [[https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html][java.util.function.Supplier]] with higher-order methods for composition with other suppliers and transformation and filtering of the results produced by its functional method ~get~.
 
 This project is stable, there won't be any breaking changes in new releases.
 
@@ -336,7 +335,7 @@ Requires *Java 8* or higher.
 *** Creating recipes
 
 Recipe is a functional interface that extends the Supplier interface.
-Both of them represent functions that accept nothing and return some value.
+Both represent functions that accept nothing and return some value.
 These functions are executed by calling their functional method ~get~.
 
 **** Lambda expression
@@ -380,12 +379,9 @@ Results:
 
 **** Function to Recipe
 
-Recipe extends Supplier by providing default methods that enable composition of suppliers
-/ recipes and transformation and filtering of the results produced by the method ~get~.
+Recipe extends Supplier by providing default methods for composition with other suppliers / recipes and transformation and filtering of the results produced by its method ~get~.
 
-There is no way to chain those default method calls directly on the lambda expression
-/ method reference so that the whole definition of a recipe is written as a single
-expression. One way to achieve this is to use the static factory method ~of~ as wrapper.
+There is no way to chain those default method calls directly on the lambda expression / method reference such that the whole definition of a recipe is written as a single expression. One way to achieve this is to use the static method ~of~ as wrapper.
 
 #+begin_src java :noweb-ref STATIC :eval never
   public static final Recipe<String>
@@ -394,9 +390,7 @@ expression. One way to achieve this is to use the static factory method ~of~ as 
           .map(UUID::toString);
 #+end_src
 
-All Recipe's methods that accept other recipes as arguments, accept any extension of the
-Supplier instead of the concrete Recipe type. That's why the method ~of~ can also be used
-as converter to the Recipe type.
+All Recipe's methods that accept other recipes as arguments, accept any extension of the Supplier instead of the concrete Recipe type. That's why the method ~of~ can also be used as converter to the Recipe type.
 
 #+begin_src java :noweb-ref EXAMPLE_3 :eval never
   Supplier<UUID>    sup = UUID::randomUUID;
@@ -419,7 +413,7 @@ Results:
 
 **** Reference Recipe
 
-Recipe that constantly returns the given reference can be created with the static factory method ~ofValue~.
+Recipe that constantly returns the given reference can be created with the static method ~ofValue~.
 
 #+begin_src java :noweb-ref EXAMPLE_4 :eval never
   Recipe<List<Integer>> rec = Recipe
@@ -439,7 +433,7 @@ Results:
 #+RESULTS: EXE_EXAMPLE_4
 : true
 
-This method is also useful for creating stateful recipes (provided argument should be thread-safe).
+This method is also useful for creating stateful recipes.
 
 #+begin_src java :noweb-ref EXAMPLE_5 :eval never
   Recipe<Long> rec = Recipe
@@ -462,11 +456,11 @@ Results:
 : 2
 : 3
 
-Recipe that constantly returns ~null~ can be created with the static factory method ~ofNull~.
+Recipe that constantly returns ~null~ can be created with the static method ~ofNull~.
 
 **** Enum Recipe
 
-Recipe that randomly chooses between constants of an Enum can be created with the static factory method ~ofEnum~.
+Recipe that randomly chooses between constants of an Enum can be created with the static method ~ofEnum~.
 
 #+begin_src java :noweb-ref STATIC :eval never
   public static enum ContactType {
@@ -482,7 +476,7 @@ Recipe that randomly chooses between constants of an Enum can be created with th
 
 **** Union
 
-Recipe that randomly chooses a value from two recipes can be created by the method ~or~.
+Recipe that randomly chooses a value from two recipes can be created with the method ~or~.
 
 #+begin_src java :noweb-ref EXAMPLE_6 :eval never
   Recipe<Integer> rec = Recipe
@@ -505,7 +499,7 @@ Results:
 : 614352061
 : null
 
-For a union of variable number of recipes, use the static factory method ~oneOf~.
+For a union of variable number of recipes, use the static method ~oneOf~.
 
 #+begin_src java :noweb-ref EXAMPLE_7 :eval never
   Recipe<String> rec = Recipe
@@ -534,7 +528,7 @@ Results:
 
 **** Filtering
 
-Use the method ~filter~ to create a new recipe that returns only those values, produced by another recipe, that match a predicate.
+Use the method ~filter~ to create a new recipe that returns only those values, produced by the underlying recipe, that match a predicate.
 
 #+begin_src java :noweb-ref EXAMPLE_8 :eval never
   Recipe<Double> rec = Recipe
@@ -583,10 +577,10 @@ This can be fixed either by improving the underlying recipe (e.g., use ~nextInt(
 
 **** Transformation
 
-Use the method ~map~ to create a new recipe that applies a function to the values produced by another recipe.
+Use the method ~map~ to create a new recipe that applies a function to the values produced by the underlying recipe.
 
 If the given function has side effects, it is often ~void~ or returns some other type that you might want to ignore.
-Use the method [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/io/sourceforge/recipe/util/Fn.java#L21][Fn#doto]] to apply the function to the object and return that same object.
+Use the helper method [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/io/sourceforge/recipe/util/Fn.java#L21][Fn#doto]] to apply the function to the object and return that same object.
 
 #+begin_src java :noweb-ref EXAMPLE_10 :eval never
   Recipe<List<Integer>> rec = Recipe
@@ -660,7 +654,7 @@ If the first recipe depends on the value produced by the second recipe, then swa
 
 ***** Recipes do not depend on each other
 
-For example, an email address consists of two parts, a local part and a domain, joined with the symbol ~@~. Both parts can be generated independently. Method [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/io/sourceforge/recipe/util/Fn.java#L52][Fn#recfn]] can be used instead of function with ignored argument.
+For example, an email address consists of two parts, a local part and a domain, joined with the symbol ~@~. Both parts can be generated independently. Helper method [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/io/sourceforge/recipe/util/Fn.java#L52][Fn#recfn]] can be used instead of function with ignored argument.
 
 #+begin_src java :noweb-ref EXAMPLE_12 :eval never
   Recipe<String> recEmail =
@@ -685,7 +679,7 @@ Results:
 
 ***** Second recipe produces results of function application
 
-For example, recipe that produces a pair of a list and the maximum element from that list. Method [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/io/sourceforge/recipe/util/Fn.java#L64][Fn#fnrec]] can be used to wrap a function so that it returns a constant recipe of its result.
+For example, recipe that produces a pair of a list and the maximum element from that list. Helper method [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/io/sourceforge/recipe/util/Fn.java#L64][Fn#fnrec]] can be used to wrap a function so that it returns a constant recipe of its result.
 
 #+begin_src java :noweb-ref EXAMPLE_13 :eval never
   Recipe<Pair<List<Integer>, Integer>> rec = Recipe
@@ -705,7 +699,7 @@ Results:
 #+RESULTS: EXE_EXAMPLE_13
 : Pair[first=[1, 9, 3, 5, 7], second=9]
 
-In any of the cases above, it may happen that the binary function has side effects. Such function is often ~void~ or returns some other type that you might want to ignore. Use the method [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/io/sourceforge/recipe/util/Fn.java#L36][Fn#dotwo]] to apply the function to the given objects and return the pair of those objects.
+In any of the cases above, it may happen that the binary function has side effects. Such function is often ~void~ or returns some other type that you might want to ignore. Use the helper method [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/io/sourceforge/recipe/util/Fn.java#L36][Fn#dotwo]] to apply the function to the given objects and return the pair of those objects.
 
 #+begin_src java :noweb-ref EXAMPLE_14 :eval never
   Recipe<List<Integer>> rec = Recipe
@@ -739,7 +733,7 @@ Results:
 
 Use the method ~wrap~ to create a new recipe that applies a function to the underlying recipe.
 
-This is commonly used with the static factory method [[https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html#generate-java.util.function.Supplier-][Stream#generate]], which creates an infinite stream of values produced by the provided supplier / recipe.
+This is commonly used with [[https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html#generate-java.util.function.Supplier-][Stream#generate]], which creates an infinite stream of values produced by the provided supplier / recipe.
 
 #+begin_src java :noweb-ref EXAMPLE_15 :eval never
   Recipe<List<Integer>> rec = recInt(-100, 100)
