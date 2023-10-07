@@ -784,12 +784,13 @@ Whenever a (binary) function provided to ~map~ or ~bind~ returns a recipe, the o
 Recipe for recipes is useful for creating unions of recipes. The example bellow is similar to the method ~oneOf~ but it accepts weight for each recipe to determine the frequency of picking that recipe.
 
 #+begin_src java :noweb-ref STATIC :eval never
-  public static <T> Recipe<T> recFreq(Map<? extends Recipe<? extends T>, Integer> frequencies) {
+  public static <T> Recipe<T> recFreq(Map<? extends Supplier<? extends T>, Integer> frequencies) {
       // naive implementation
       List<Recipe<? extends T>> recipes = frequencies
           .entrySet().stream()
           .filter(e -> e.getValue() > 0)
           .flatMap(e -> Stream.generate(e::getKey).limit(e.getValue()))
+          .map(Recipe::of)
           .collect(toList());
       if (recipes.isEmpty())
           throw new IllegalArgumentException("No positive frequencies.");

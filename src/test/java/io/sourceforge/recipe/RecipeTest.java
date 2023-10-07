@@ -218,6 +218,10 @@ class RecipeTest {
         assertEquals(100, rec.get());
         assertEquals(101, rec.get());
         assertEquals(102, rec.get());
+        counter.set(0);
+        assertEquals(100, rec.get());
+        assertEquals(101, rec.get());
+        assertEquals(102, rec.get());
     }
 
     @Test
