@@ -22,14 +22,14 @@ Requires *Java 8* or higher.
   <dependency>
     <groupId>io.sourceforge.recipe</groupId>
     <artifactId>recipe</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
   </dependency>
 #+end_src
 
 *** Gradle
 
 #+begin_src text
-  implementation 'io.sourceforge.recipe:recipe:1.0.2'
+  implementation 'io.sourceforge.recipe:recipe:1.0.3'
 #+end_src
 
 ** Examples
@@ -390,7 +390,7 @@ There is no way to chain those default method calls directly on the lambda expre
           .map(UUID::toString);
 #+end_src
 
-All Recipe's methods that accept other recipes as arguments, accept any extension of the Supplier instead of the concrete Recipe type. That's why the method ~of~ can also be used as converter to the Recipe type.
+All Recipe's methods that accept other recipes as arguments, accept any extension of the Supplier instead of the concrete ~Recipe~ type. That's why the method ~of~ can also be used as converter to the ~Recipe~ type.
 
 #+begin_src java :noweb-ref EXAMPLE_3 :eval never
   Supplier<UUID>    sup = UUID::randomUUID;
@@ -654,7 +654,7 @@ If the first recipe depends on the value produced by the second recipe, then swa
 
 ***** Recipes do not depend on each other
 
-For example, an email address consists of two parts, a local part and a domain, joined with the symbol ~@~. Both parts can be generated independently. Helper method [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/io/sourceforge/recipe/util/Fn.java#L52][Fn#recfn]] can be used instead of function with ignored argument.
+For example, an email address consists of two parts, a local part and a domain, joined with the symbol ~@~. Both parts can be generated independently. Helper method [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/io/sourceforge/recipe/util/Fn.java#L84][Fn#recfn]] can be used instead of function with ignored argument.
 
 #+begin_src java :noweb-ref EXAMPLE_12 :eval never
   Recipe<String> recEmail =
@@ -679,7 +679,7 @@ Results:
 
 ***** Second recipe produces results of function application
 
-For example, recipe that produces a pair of a list and the maximum element from that list. Helper method [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/io/sourceforge/recipe/util/Fn.java#L64][Fn#fnrec]] can be used to wrap a function so that it returns a constant recipe of its result.
+For example, recipe that produces a pair of a list and the maximum element from that list. Helper method [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/io/sourceforge/recipe/util/Fn.java#L96][Fn#fnrec]] can be used to wrap a function so that it returns a constant recipe of its result.
 
 #+begin_src java :noweb-ref EXAMPLE_13 :eval never
   Recipe<Pair<List<Integer>, Integer>> rec = Recipe
@@ -699,7 +699,7 @@ Results:
 #+RESULTS: EXE_EXAMPLE_13
 : Pair[first=[1, 9, 3, 5, 7], second=9]
 
-In any of the cases above, it may happen that the binary function has side effects. Such function is often ~void~ or returns some other type that you might want to ignore. Use the helper method [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/io/sourceforge/recipe/util/Fn.java#L36][Fn#dotwo]] to apply the function to the given objects and return the pair of those objects.
+In any of the cases above, it may happen that the binary function has side effects. Such function is often ~void~ or returns some other type that you might want to ignore. Use the helper method [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/io/sourceforge/recipe/util/Fn.java#L36][Fn#dotwo]] to apply the function to the given objects and return the pair of those objects. If you need only the first argument provided to the binary function, use [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/io/sourceforge/recipe/util/Fn.java#L52][Fn#biFirst]]. If you need only the second argument, use [[https://github.com/nikolavojicic/recipe/blob/master/src/main/java/io/sourceforge/recipe/util/Fn.java#L68][Fn#biSecond]].
 
 #+begin_src java :noweb-ref EXAMPLE_14 :eval never
   Recipe<List<Integer>> rec = Recipe
@@ -707,8 +707,7 @@ In any of the cases above, it may happen that the binary function has side effec
       .bind(recfn(Recipe
                   .ofValue(new AtomicInteger())
                   .map(AtomicInteger::incrementAndGet)),
-            dotwo(List::add)) // add returns boolean
-      .map(Pair::first)
+            biFirst(List::add)) // add returns boolean
       // .map(List::copyOf) in Java 10+
       .map(ArrayList::new)
       .map(Collections::unmodifiableList);
@@ -1001,28 +1000,7 @@ To generate builders and withers for Java 14 records, you can use [[https://gith
 #+begin_src java :noweb-ref STATIC :eval never
   public static final Recipe<Role> REC_ROLE = Recipe
       .of(Role::new)
-      .bind(recfn(REC_UUID_STR), dotwo(Role::setName))
-      .map(Pair::first);
-#+end_src
-
-To avoid wrapping of arguments to a pair and the ~.map(Pair::first)~ line, replace ~dotwo~ with a method like this:
-
-#+begin_src java :noweb-ref STATIC :eval never
-  public static <T, U> BiFunction<T, U, T>
-      biFirst
-          (BiConsumer<? super T,
-                      ? super U> action)
-  {
-      requireNonNull(action);
-      return (x, y) -> {
-          action.accept(x, y);
-          return x;
-      };
-  }
-
-  public static final Recipe<Role> REC_ROLE_WITH_INVALID_ID =
-      REC_ROLE
-          .bind(recfn(REC_INT_NEG), biFirst(Role::setId));
+      .bind(recfn(REC_UUID_STR), biFirst(Role::setName));
 #+end_src
 
 **** Constructors
