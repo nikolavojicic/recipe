@@ -87,6 +87,7 @@ class RecipeTest {
         assertThrows(IllegalArgumentException.class, () -> Recipe.ofEnum(E0.class));
     }
 
+    @SuppressWarnings("unused")
     enum E1 {X}
 
     @Test
@@ -96,6 +97,7 @@ class RecipeTest {
                 Stream.generate(Recipe.ofEnum(E1.class)).limit(100).collect(toSet()));
     }
 
+    @SuppressWarnings("unused")
     enum E3 {X, Y, Z}
 
     @Test

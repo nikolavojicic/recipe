@@ -3,16 +3,16 @@
 
 package io.sourceforge.recipe.util;
 
-import org.junit.jupiter.api.Test;
 import io.sourceforge.recipe.Recipe;
+import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static io.sourceforge.recipe.util.Fn.*;
 import static java.util.Collections.singleton;
 import static java.util.stream.Collectors.toSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static io.sourceforge.recipe.util.Fn.*;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 class PairTest {

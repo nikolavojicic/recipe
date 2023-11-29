@@ -50,6 +50,38 @@ public class Fn {
     }
 
     /**
+     * @return function that applies {@code action} to the given values and returns the first of those values
+     * @throws NullPointerException if {@code action} is {@code null}
+     */
+    public static <T, U> BiFunction<T, U, T>
+        biFirst
+            (BiConsumer<? super T,
+                        ? super U> action)
+    {
+        requireNonNull(action);
+        return (x, y) -> {
+            action.accept(x, y);
+            return x;
+        };
+    }
+
+    /**
+     * @return function that applies {@code action} to the given values and returns the second of those values
+     * @throws NullPointerException if {@code action} is {@code null}
+     */
+    public static <T, U> BiFunction<T, U, U>
+        biSecond
+            (BiConsumer<? super T,
+                        ? super U> action)
+    {
+        requireNonNull(action);
+        return (x, y) -> {
+            action.accept(x, y);
+            return y;
+        };
+    }
+
+    /**
      * @return function that constantly returns the given {@code recipe}
      * @throws NullPointerException if {@code recipe} is {@code null}
      */

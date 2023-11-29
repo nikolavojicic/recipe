@@ -3,16 +3,16 @@
 
 package io.sourceforge.recipe.util;
 
-import org.junit.jupiter.api.Test;
 import io.sourceforge.recipe.Recipe;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import static io.sourceforge.recipe.util.Fn.*;
 import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static io.sourceforge.recipe.util.Fn.*;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 class FnTest {
@@ -24,10 +24,10 @@ class FnTest {
 
     @Test
     void doto_nonNull() {
-        Recipe<Set<Integer>> set = Recipe
+        Recipe<Set<Integer>> rec = Recipe
                 .of(HashSet<Integer>::new)
                 .map(doto(hs -> hs.add(5)));
-        assertEquals(singleton(5), set.get());
+        assertEquals(singleton(5), rec.get());
     }
 
     @Test
@@ -37,11 +37,39 @@ class FnTest {
 
     @Test
     void dotwo_nonNull() {
-        Recipe<Set<Integer>> set = Recipe
+        Recipe<Set<Integer>> rec = Recipe
                 .of(HashSet<Integer>::new)
                 .bind(__ -> () -> 5, dotwo(Set::add))
                 .map(Pair::first);
-        assertEquals(singleton(5), set.get());
+        assertEquals(singleton(5), rec.get());
+    }
+
+    @Test
+    void biFirst_null() {
+        assertThrows(NullPointerException.class, () -> biFirst(null));
+    }
+
+    @Test
+    void biFirst_nonNull() {
+        Recipe<Set<Integer>> rec = Recipe
+                .of(HashSet<Integer>::new)
+                .bind(__ -> () -> 5, biFirst(Set::add));
+        assertEquals(singleton(5), rec.get());
+    }
+
+    @Test
+    void biSecond_null() {
+        assertThrows(NullPointerException.class, () -> biSecond(null));
+    }
+
+    @Test
+    void biSecond_nonNull() {
+        Set<Integer> set = new HashSet<>();
+        Recipe<Integer> rec = Recipe
+                .ofValue(set)
+                .bind(__ -> () -> 5, biSecond(Set::add));
+        assertEquals(5, rec.get());
+        assertEquals(singleton(5), set);
     }
 
     @Test
@@ -51,11 +79,11 @@ class FnTest {
 
     @Test
     void recfn_nonNull() {
-        Recipe<Set<Integer>> set = Recipe
+        Recipe<Set<Integer>> rec = Recipe
                 .of(HashSet<Integer>::new)
                 .bind(recfn(() -> 5), dotwo(Set::add))
                 .map(Pair::first);
-        assertEquals(singleton(5), set.get());
+        assertEquals(singleton(5), rec.get());
     }
 
     @Test
@@ -65,11 +93,11 @@ class FnTest {
 
     @Test
     void fnrec_nonNull() {
-        Recipe<Set<Integer>> set = Recipe
+        Recipe<Set<Integer>> rec = Recipe
                 .of(HashSet<Integer>::new)
                 .bind(fnrec(HashSet::size), dotwo(Set::add))
                 .map(Pair::first);
-        assertEquals(singleton(0), set.get());
+        assertEquals(singleton(0), rec.get());
     }
 
 }
