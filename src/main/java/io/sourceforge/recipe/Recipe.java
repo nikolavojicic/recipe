@@ -152,7 +152,7 @@ public interface Recipe<T> extends Supplier<T> {
      **/
     static <T extends Enum<T>> Recipe<T>
         ofEnum
-            (Class<T> type)
+            (Class<? extends T> type)
     {
         T[] constants = type.getEnumConstants();
         if (constants.length == 0)
